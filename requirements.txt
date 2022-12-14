@@ -41,3 +41,4 @@ SQLAlchemy==1.4.32
 urllib3==1.26.13
 webargs==8.1.0
 Werkzeug==2.1.0
+
