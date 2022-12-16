@@ -2,7 +2,7 @@ from marshmallow import validate, validates, validates_schema, \
     ValidationError, post_dump
 from api import ma, db
 from api.auth import token_auth
-from api.models.models import User, Post
+from api.models.administration.adminModels import User, Post
 
 paginated_schema_cache = {}
 

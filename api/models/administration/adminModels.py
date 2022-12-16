@@ -49,10 +49,10 @@ class Token(db.Model):
     def generate(self):
         self.access_token = secrets.token_urlsafe()
         self.access_expiration = datetime.utcnow() + \
-                                 timedelta(minutes=current_app.config['ACCESS_TOKEN_MINUTES'])
+            timedelta(minutes=current_app.config['ACCESS_TOKEN_MINUTES'])
         self.refresh_token = secrets.token_urlsafe()
         self.refresh_expiration = datetime.utcnow() + \
-                                  timedelta(days=current_app.config['REFRESH_TOKEN_DAYS'])
+            timedelta(days=current_app.config['REFRESH_TOKEN_DAYS'])
 
     def expire(self, delay=None):
         if delay is None:  # pragma: no branch

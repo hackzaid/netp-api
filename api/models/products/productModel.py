@@ -14,8 +14,10 @@ from api.app import db
 productCategories = sqla.Table(
     'netp_productCategories',
     db.Model.metadata,
-    sqla.Column('product_id', sqla.Integer, sqla.ForeignKey('netp_product.id')),
-    sqla.Column('netp_category', sqla.Integer, sqla.ForeignKey('netp_category.id'))
+    sqla.Column('product_id', sqla.Integer,
+                sqla.ForeignKey('netp_product.id')),
+    sqla.Column('netp_category', sqla.Integer,
+                sqla.ForeignKey('netp_category.id'))
 )
 
 
@@ -35,10 +37,13 @@ class Product(db.Model):
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     productName = sqla.Column(sqla.String(100), nullable=False)
-    categoryID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_category.id'), index=True)
+    categoryID = sqla.Column(sqla.Integer, sqla.ForeignKey(
+        'netp_category.id'), index=True)
 
-    productCategory = sqla_orm.relationship("Category", secondary=productCategories, backref='netp_product')
-    applicationProduct = sqla_orm.relationship("MemberApplication", back_populates='majorProduct', lazy='noload')
+    productCategory = sqla_orm.relationship(
+        "Category", secondary=productCategories, backref='netp_product')
+    applicationProduct = sqla_orm.relationship(
+        "MemberApplication", back_populates='majorProduct', lazy='noload')
 
     def __repr__(self):
         return "Product {}".format(self.text)
