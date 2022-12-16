@@ -2,7 +2,8 @@ from flask import Blueprint, abort
 from apifairy import authenticate, body, response, other_responses
 
 from api import db
-from api.models.models import User, Post
+from api.models.administration.adminModels import User
+from api.models.models import Post
 from api.schemas.schemas import PostSchema
 from api.auth import token_auth
 from api.decorators import paginated_response

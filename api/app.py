@@ -1,3 +1,4 @@
+import sentry_sdk
 from flask import Flask, redirect, url_for, request
 from alchemical.flask import Alchemical
 from flask_migrate import Migrate
@@ -6,6 +7,7 @@ from flask_cors import CORS
 from flask_mail import Mail
 from apifairy import APIFairy
 from configs.config import Config
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 db = Alchemical()
 migrate = Migrate()
@@ -31,15 +33,18 @@ def create_app(config_class=Config):
 
     # blueprints
     from api.errors import errors
-    app.register_blueprint(errors)
     from api.tokens import tokens
-    app.register_blueprint(tokens, url_prefix='/api')
     from api.users import users
-    app.register_blueprint(users, url_prefix='/api')
     from api.posts import posts
+    from api.views.members.memberViews import members
+    from api.views.products.productViews import product
+
+    app.register_blueprint(errors)
+    app.register_blueprint(tokens, url_prefix='/api')
+    app.register_blueprint(users, url_prefix='/api')
     app.register_blueprint(posts, url_prefix='/api')
-    from api.fake import fake
-    app.register_blueprint(fake)
+    app.register_blueprint(members, url_prefix='/api')
+    app.register_blueprint(product, url_prefix='/api')
 
     # define the shell context
     @app.shell_context_processor
@@ -61,5 +66,23 @@ def create_app(config_class=Config):
         # Werkzeu sometimes does not flush the request body so we do it here
         request.get_data()
         return response
+
+    sentry_sdk.init(
+        dsn="https://c19fa798951c45d08f0f870aa26094a7@o4504089491537920.ingest.sentry.io/4504297885597696",
+        integrations=[
+            FlaskIntegration(),
+        ],
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
+
+        # By default the SDK will try to use the SENTRY_RELEASE
+        # environment variable, or infer a git commit
+        # SHA as release, however you may want to set
+        # something more human-readable.
+        # release="myapp@1.0.0",
+    )
 
     return app

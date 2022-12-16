@@ -3,7 +3,7 @@ import click
 from flask import Blueprint
 from faker import Faker
 from api.app import db
-from api.models.models import User, Post
+from api.models.administration.adminModels import User, Post
 
 fake = Blueprint('fake', __name__)
 faker = Faker()

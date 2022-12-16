@@ -3,7 +3,7 @@ from flask import Blueprint, abort
 from apifairy import authenticate, body, response
 
 from api import db
-from api.models.models import User
+from api.models.administration.adminModels import User
 from api.schemas.schemas import UserSchema, UpdateUserSchema, EmptySchema
 from api.auth import token_auth
 from api.decorators import paginated_response

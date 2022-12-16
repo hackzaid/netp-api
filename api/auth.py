@@ -3,7 +3,7 @@ from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from werkzeug.exceptions import Unauthorized, Forbidden
 
 from api.app import db
-from api.models.models import User
+from api.models.administration.adminModels import User
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()

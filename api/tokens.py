@@ -5,7 +5,7 @@ from apifairy import authenticate, body, response, other_responses
 from api.app import db
 from api.auth import basic_auth
 from api.email import send_email
-from api.models.models import User, Token
+from api.models.administration.adminModels import User, Token
 from api.schemas.schemas import TokenSchema, PasswordResetRequestSchema, \
     PasswordResetSchema, EmptySchema
 
