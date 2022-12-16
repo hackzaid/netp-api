@@ -1,8 +1,4 @@
-National Export Trade Promotion
-
-- Frontend
-- Backend
-- Mobile App
+National Export Trade Promotion - API
 
 A government initiative to promote export of quality products through Information Technology
 
