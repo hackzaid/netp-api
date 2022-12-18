@@ -6,7 +6,7 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_mail import Mail
 from apifairy import APIFairy
-from configs.config import Config
+from configs.config import BaseConfig, ProdConfig
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 db = Alchemical()
@@ -17,7 +17,7 @@ mail = Mail()
 apifairy = APIFairy()
 
 
-def create_app(config_class=Config):
+def create_app(config_class=ProdConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
