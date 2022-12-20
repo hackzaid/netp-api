@@ -9,14 +9,14 @@ class MemberSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Members
         ordered = True
-        include_fk = True
+
 
     id = ma.auto_field(dump_only=True)
     regNo = ma.Integer(dump_only=True)
-    firstName = ma.String(required=True, validate=validate.Length(min=3, max=64))
-    lastName = ma.String(required=True, validate=validate.Length(min=3, max=64))
-    village = ma.String(required=True, validate=validate.Length(min=3, max=64))
-    region = ma.String(required=True, validate=validate.Length(min=3, max=64))
+    firstName = ma.String(required=True)
+    lastName = ma.String(required=True)
+    village = ma.String(required=True)
+    region = ma.String(required=True)
     membershipID = ma.Integer(required=True)
 
     membershipType = ma.Nested('MembershipTypeSchema', dump_only=True)
@@ -39,10 +39,10 @@ class ContactPersonSchema(ma.SQLAlchemySchema):
         ordered = True
 
     id = ma.auto_field(dump_only=True)
-    c_firstName = ma.String(required=True, validate=validate.Length(min=3, max=64))
-    c_lastName = ma.String(required=True, validate=validate.Length(min=3, max=64))
-    c_position = ma.String(required=True, validate=validate.Length(min=3, max=64))
-    c_phone = ma.String(required=True, validate=validate.Length(min=3, max=64))
-    c_workphone = ma.String(required=True, validate=validate.Length(min=3, max=64))
-    c_email = ma.String(required=True, validate=validate.Length(min=3, max=64))
+    c_firstName = ma.String(required=True)
+    c_lastName = ma.String(required=True)
+    c_position = ma.String(required=True)
+    c_phone = ma.String(required=True)
+    c_workphone = ma.String(required=True)
+    c_email = ma.String(required=True)
     c_memberID = ma.Integer(required=True)
