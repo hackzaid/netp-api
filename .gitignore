@@ -3,3 +3,4 @@ migrations
 *.pyc
 configs/config.py
 .env
+api/app.py

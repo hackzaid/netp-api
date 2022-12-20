@@ -3,16 +3,10 @@ from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from werkzeug.exceptions import Unauthorized, Forbidden
 
 from api.app import db
-from api.models.administration.adminModels import User, Role, UserRole
+from api.models.administration.adminModels import User
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
-
-
-@basic_auth.get_user_roles
-def get_user_roles(username):
-
-    return username.get_roles()
 
 
 @basic_auth.verify_password

@@ -2,7 +2,7 @@ from marshmallow import validate, validates, validates_schema, \
     ValidationError, post_dump
 from api import ma, db
 from api.auth import token_auth
-from api.models.administration.adminModels import User, Group, Role
+from api.models.administration.adminModels import User
 
 paginated_schema_cache = {}
 
@@ -114,22 +114,22 @@ class UpdateUserSchema(UserSchema):
             raise ValidationError('Password is incorrect')
 
 
-class GroupSchema(ma.SQLAlchemySchema):
-    class Meta:
-        ordered = True
-        model = Group
-
-    id = ma.auto_field(dump_only=True)
-    name = ma.String(required=True)
-
-
-class RoleSchema(ma.SQLAlchemySchema):
-    class Meta:
-        ordered = True
-        model = Role
-
-    id = ma.auto_field(dump_only=True)
-    name = ma.String(required=True)
+# class GroupSchema(ma.SQLAlchemySchema):
+#     class Meta:
+#         ordered = True
+#         model = Group
+#
+#     id = ma.auto_field(dump_only=True)
+#     name = ma.String(required=True)
+#
+#
+# class RoleSchema(ma.SQLAlchemySchema):
+#     class Meta:
+#         ordered = True
+#         model = Role
+#
+#     id = ma.auto_field(dump_only=True)
+#     name = ma.String(required=True)
 
 
 class TokenSchema(ma.Schema):

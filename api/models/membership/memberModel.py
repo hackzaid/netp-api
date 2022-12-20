@@ -45,7 +45,10 @@ class MemberType(db.Model):
     id = sqla.Column(sqla.Integer, primary_key=True)
     title = sqla.Column(sqla.String(255), unique=True)
 
-    type = sqla_orm.relationship('Members', back_populates='membershipType')
+    type = sqla_orm.relationship('Members', back_populates='membershipType', lazy='noload')
+
+    def __repr__(self):
+        return '<MemberType {}>'.format(self.text)
 
 
 class ContactPersons(Updateable, db.Model):

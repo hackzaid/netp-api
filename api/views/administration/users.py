@@ -3,8 +3,8 @@ from flask import Blueprint, abort
 from apifairy import authenticate, body, response
 
 from api import db
-from api.models.administration.adminModels import User, Role, Group
-from api.schemas.schemas import UserSchema, UpdateUserSchema, EmptySchema, GroupSchema, RoleSchema
+from api.models.administration.adminModels import User
+from api.schemas.schemas import UserSchema, UpdateUserSchema, EmptySchema
 from api.auth import token_auth
 from api.decorators import paginated_response
 
@@ -13,11 +13,11 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 update_user_schema = UpdateUserSchema(partial=True)
 
-group_schema = GroupSchema()
-groups_schema = GroupSchema(many=True)
-
-role_schema = RoleSchema()
-roles_schema = RoleSchema(many=True)
+# group_schema = GroupSchema()
+# groups_schema = GroupSchema(many=True)
+#
+# role_schema = RoleSchema()
+# roles_schema = RoleSchema(many=True)
 
 
 @users.route('/users', methods=['POST'])
@@ -81,17 +81,17 @@ def put(data):
     return user
 
 
-@users.route('/user/role', methods=['POST'])
-@authenticate(token_auth)
-@body(role_schema)
-@response(role_schema)
-def role_add(args):
-    """Add User Roles"""
-    role = Role(**args)
-    role.allowances = dict(
-        members='r',
-        secret_members=None  # no authorization
-    )
-    db.session.add(role)
-    db.session.commit()
-    return role
+# @users.route('/user/role', methods=['POST'])
+# @authenticate(token_auth)
+# @body(role_schema)
+# @response(role_schema)
+# def role_add(args):
+#     """Add User Roles"""
+#     role = Role(**args)
+#     role.allowances = dict(
+#         members='r',
+#         secret_members=None  # no authorization
+#     )
+#     db.session.add(role)
+#     db.session.commit()
+#     return role

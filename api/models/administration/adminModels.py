@@ -12,19 +12,19 @@ from flask_authorize import RestrictionsMixin, AllowancesMixin, PermissionsMixin
 
 from api.app import db
 
-UserGroup = sqla.Table(
-    'user_group',
-    db.Model.metadata,
-    sqla.Column('user_id', sqla.Integer, sqla.ForeignKey('users.id')),
-    sqla.Column('group_id', sqla.Integer, sqla.ForeignKey('groups.id'))
-)
-
-UserRole = sqla.Table(
-    'user_role',
-    db.Model.metadata,
-    sqla.Column('user_id', sqla.Integer, sqla.ForeignKey('users.id')),
-    sqla.Column('role_id', sqla.Integer, sqla.ForeignKey('roles.id'))
-)
+# UserGroup = sqla.Table(
+#     'user_group',
+#     db.Model.metadata,
+#     sqla.Column('user_id', sqla.Integer, sqla.ForeignKey('users.id')),
+#     sqla.Column('group_id', sqla.Integer, sqla.ForeignKey('groups.id'))
+# )
+#
+# UserRole = sqla.Table(
+#     'user_role',
+#     db.Model.metadata,
+#     sqla.Column('user_id', sqla.Integer, sqla.ForeignKey('users.id')),
+#     sqla.Column('role_id', sqla.Integer, sqla.ForeignKey('roles.id'))
+# )
 
 
 class Updateable:
@@ -82,8 +82,8 @@ class User(Updateable, db.Model):
     first_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     last_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
 
-    roles = sqla_orm.relationship('Role', secondary=UserRole)
-    groups = sqla_orm.relationship('Group', secondary=UserGroup)
+    # roles = sqla_orm.relationship('Role', secondary=UserRole)
+    # groups = sqla_orm.relationship('Group', secondary=UserGroup)
     tokens = sqla_orm.relationship('Token', back_populates='user',
                                    lazy='noload')
 
@@ -197,20 +197,15 @@ class User(Updateable, db.Model):
     #             user))).one_or_none() is not None
 
 
-class Group(db.Model, RestrictionsMixin):
-    __tablename__ = 'groups'
-
-    id = sqla.Column(sqla.Integer, primary_key=True)
-    name = sqla.Column(sqla.String(255), nullable=False, unique=True)
-
-
-class Role(db.Model, AllowancesMixin):
-    __tablename__ = 'roles'
-
-    id = sqla.Column(sqla.Integer, primary_key=True)
-    name = sqla.Column(sqla.String(255), nullable=False, unique=True)
-
-
-def load_user():
-    user = db.session.get(User, id)
-    return user
+# class Group(db.Model, RestrictionsMixin):
+#     __tablename__ = 'groups'
+#
+#     id = sqla.Column(sqla.Integer, primary_key=True)
+#     name = sqla.Column(sqla.String(255), nullable=False, unique=True)
+#
+#
+# class Role(db.Model, AllowancesMixin):
+#     __tablename__ = 'roles'
+#
+#     id = sqla.Column(sqla.Integer, primary_key=True)
+#     name = sqla.Column(sqla.String(255), nullable=False, unique=True)
