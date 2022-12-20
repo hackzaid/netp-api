@@ -2,13 +2,14 @@ from marshmallow import validate, validates, validates_schema, \
     ValidationError, post_dump
 from api import ma, db
 from api.auth import token_auth
-from api.models.membership.memberModel import Members, ContactPersons
+from api.models.membership.memberModel import *
 
 
 class MemberSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Members
         ordered = True
+        include_fk = True
 
     id = ma.auto_field(dump_only=True)
     regNo = ma.Integer(dump_only=True)
@@ -16,8 +17,20 @@ class MemberSchema(ma.SQLAlchemySchema):
     lastName = ma.String(required=True, validate=validate.Length(min=3, max=64))
     village = ma.String(required=True, validate=validate.Length(min=3, max=64))
     region = ma.String(required=True, validate=validate.Length(min=3, max=64))
+    membershipID = ma.Integer(required=True)
 
+    membershipType = ma.Nested('MembershipTypeSchema', dump_only=True)
     contactPersons = ma.Nested('ContactPersonSchema', many=True, dump_only=True)
+
+
+class MembershipTypeSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = MemberType
+        ordered = True
+        include_fk = True
+
+    id = ma.auto_field(dump_only=True)
+    title = ma.String(required=True)
 
 
 class ContactPersonSchema(ma.SQLAlchemySchema):

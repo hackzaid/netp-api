@@ -3,10 +3,16 @@ from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from werkzeug.exceptions import Unauthorized, Forbidden
 
 from api.app import db
-from api.models.administration.adminModels import User
+from api.models.administration.adminModels import User, Role, UserRole
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
+
+
+@basic_auth.get_user_roles
+def get_user_roles(username):
+
+    return username.get_roles()
 
 
 @basic_auth.verify_password
@@ -23,10 +29,10 @@ def verify_password(username, password):
 def basic_auth_error(status=401):
     error = (Forbidden if status == 403 else Unauthorized)()
     return {
-        'code': error.code,
-        'message': error.name,
-        'description': error.description,
-    }, error.code, {'WWW-Authenticate': 'Form'}
+               'code': error.code,
+               'message': error.name,
+               'description': error.description,
+           }, error.code, {'WWW-Authenticate': 'Form'}
 
 
 @token_auth.verify_token
@@ -43,7 +49,7 @@ def verify_token(access_token):
 def token_auth_error(status=401):
     error = (Forbidden if status == 403 else Unauthorized)()
     return {
-        'code': error.code,
-        'message': error.name,
-        'description': error.description,
-    }, error.code
+               'code': error.code,
+               'message': error.name,
+               'description': error.description,
+           }, error.code

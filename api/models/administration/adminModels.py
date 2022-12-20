@@ -8,23 +8,29 @@ import jwt
 import sqlalchemy as sqla
 from sqlalchemy import orm as sqla_orm
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_authorize import RestrictionsMixin, AllowancesMixin, PermissionsMixin
 
 from api.app import db
-from api.models.models import Post
+
+UserGroup = sqla.Table(
+    'user_group',
+    db.Model.metadata,
+    sqla.Column('user_id', sqla.Integer, sqla.ForeignKey('users.id')),
+    sqla.Column('group_id', sqla.Integer, sqla.ForeignKey('groups.id'))
+)
+
+UserRole = sqla.Table(
+    'user_role',
+    db.Model.metadata,
+    sqla.Column('user_id', sqla.Integer, sqla.ForeignKey('users.id')),
+    sqla.Column('role_id', sqla.Integer, sqla.ForeignKey('roles.id'))
+)
 
 
 class Updateable:
     def update(self, data):
         for attr, value in data.items():
             setattr(self, attr, value)
-
-
-followers = sqla.Table(
-    'followers',
-    db.Model.metadata,
-    sqla.Column('follower_id', sqla.Integer, sqla.ForeignKey('users.id')),
-    sqla.Column('followed_id', sqla.Integer, sqla.ForeignKey('users.id'))
-)
 
 
 class Token(db.Model):
@@ -76,36 +82,26 @@ class User(Updateable, db.Model):
     first_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     last_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
 
+    roles = sqla_orm.relationship('Role', secondary=UserRole)
+    groups = sqla_orm.relationship('Group', secondary=UserGroup)
     tokens = sqla_orm.relationship('Token', back_populates='user',
                                    lazy='noload')
-    posts = sqla_orm.relationship('Post', back_populates='author',
-                                  lazy='noload')
-    following = sqla_orm.relationship(
-        'User', secondary=followers,
-        primaryjoin=(followers.c.follower_id == id),
-        secondaryjoin=(followers.c.followed_id == id),
-        back_populates='followers', lazy='noload')
-    followers = sqla_orm.relationship(
-        'User', secondary=followers,
-        primaryjoin=(followers.c.followed_id == id),
-        secondaryjoin=(followers.c.follower_id == id),
-        back_populates='following', lazy='noload')
 
-    def posts_select(self):
-        return Post.select().where(sqla_orm.with_parent(self, User.posts))
-
-    def following_select(self):
-        return User.select().where(sqla_orm.with_parent(self, User.following))
-
-    def followers_select(self):
-        return User.select().where(sqla_orm.with_parent(self, User.followers))
-
-    def followed_posts_select(self):
-        return Post.select().join(
-            followers, (followers.c.followed_id == Post.user_id),
-            isouter=True).group_by(Post.id).filter(
-            sqla.or_(Post.author == self,
-                     followers.c.follower_id == self.id))
+    # def posts_select(self):
+    #     return Post.select().where(sqla_orm.with_parent(self, User.posts))
+    #
+    # def following_select(self):
+    #     return User.select().where(sqla_orm.with_parent(self, User.following))
+    #
+    # def followers_select(self):
+    #     return User.select().where(sqla_orm.with_parent(self, User.followers))
+    #
+    # def followed_posts_select(self):
+    #     return Post.select().join(
+    #         followers, (followers.c.followed_id == Post.user_id),
+    #         isouter=True).group_by(Post.id).filter(
+    #         sqla.or_(Post.author == self,
+    #                  followers.c.follower_id == self.id))
 
     def __repr__(self):  # pragma: no cover
         return '<User {}>'.format(self.username)
@@ -184,18 +180,37 @@ class User(Updateable, db.Model):
         return db.session.scalar(User.select().filter_by(
             email=data['reset_email']))
 
-    def follow(self, user):
-        if not self.is_following(user):
-            db.session.execute(followers.insert().values(
-                follower_id=self.id, followed_id=user.id))
+    # def follow(self, user):
+    #     if not self.is_following(user):
+    #         db.session.execute(followers.insert().values(
+    #             follower_id=self.id, followed_id=user.id))
+    #
+    # def unfollow(self, user):
+    #     if self.is_following(user):
+    #         db.session.execute(followers.delete().where(
+    #             followers.c.follower_id == self.id,
+    #             followers.c.followed_id == user.id))
+    #
+    # def is_following(self, user):
+    #     return db.session.scalars(User.select().where(
+    #         User.id == self.id, User.following.contains(
+    #             user))).one_or_none() is not None
 
-    def unfollow(self, user):
-        if self.is_following(user):
-            db.session.execute(followers.delete().where(
-                followers.c.follower_id == self.id,
-                followers.c.followed_id == user.id))
 
-    def is_following(self, user):
-        return db.session.scalars(User.select().where(
-            User.id == self.id, User.following.contains(
-                user))).one_or_none() is not None
+class Group(db.Model, RestrictionsMixin):
+    __tablename__ = 'groups'
+
+    id = sqla.Column(sqla.Integer, primary_key=True)
+    name = sqla.Column(sqla.String(255), nullable=False, unique=True)
+
+
+class Role(db.Model, AllowancesMixin):
+    __tablename__ = 'roles'
+
+    id = sqla.Column(sqla.Integer, primary_key=True)
+    name = sqla.Column(sqla.String(255), nullable=False, unique=True)
+
+
+def load_user():
+    user = db.session.get(User, id)
+    return user

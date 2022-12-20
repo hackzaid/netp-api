@@ -2,7 +2,7 @@ from marshmallow import validate, validates, validates_schema, \
     ValidationError, post_dump
 from api import ma, db
 from api.auth import token_auth
-from api.models.administration.adminModels import User, Post
+from api.models.administration.adminModels import User, Group, Role
 
 paginated_schema_cache = {}
 
@@ -76,8 +76,9 @@ class UserSchema(ma.SQLAlchemySchema):
     about_me = ma.auto_field()
     first_seen = ma.auto_field(dump_only=True)
     last_seen = ma.auto_field(dump_only=True)
-    posts_url = ma.URLFor('posts.user_all', values={'id': '<id>'},
-                          dump_only=True)
+
+    # posts_url = ma.URLFor('posts.user_all', values={'id': '<id>'},
+    #                       dump_only=True)
 
     @validates('username')
     def validate_username(self, value):
@@ -113,23 +114,22 @@ class UpdateUserSchema(UserSchema):
             raise ValidationError('Password is incorrect')
 
 
-class PostSchema(ma.SQLAlchemySchema):
+class GroupSchema(ma.SQLAlchemySchema):
     class Meta:
-        model = Post
-        include_fk = True
         ordered = True
+        model = Group
 
     id = ma.auto_field(dump_only=True)
-    url = ma.String(dump_only=True)
-    text = ma.auto_field(required=True, validate=validate.Length(
-        min=1, max=280))
-    timestamp = ma.auto_field(dump_only=True)
-    author = ma.Nested(UserSchema, dump_only=True)
+    name = ma.String(required=True)
 
-    @post_dump
-    def fix_datetimes(self, data, **kwargs):
-        data['timestamp'] += 'Z'
-        return data
+
+class RoleSchema(ma.SQLAlchemySchema):
+    class Meta:
+        ordered = True
+        model = Role
+
+    id = ma.auto_field(dump_only=True)
+    name = ma.String(required=True)
 
 
 class TokenSchema(ma.Schema):
