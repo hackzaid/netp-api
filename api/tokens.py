@@ -6,8 +6,10 @@ from api.app import db
 from api.auth import basic_auth
 from api.email import send_email
 from api.models.administration.adminModels import User, Token
-from api.schemas.schemas import TokenSchema, PasswordResetRequestSchema, \
-    PasswordResetSchema, EmptySchema
+from api.schemas.administration.adminSchemas import TokenSchema, PasswordResetRequestSchema, \
+    PasswordResetSchema
+
+from api.schemas.globalSchemas import EmptySchema
 
 tokens = Blueprint('tokens', __name__)
 token_schema = TokenSchema()

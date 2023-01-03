@@ -1,10 +1,11 @@
 from apifairy.decorators import other_responses
-from flask import Blueprint, abort
+from flask import Blueprint, abort, g
 from apifairy import authenticate, body, response
+from flask_login import current_user
 
 from api import db
-from api.models.administration.adminModels import User
-from api.schemas.schemas import UserSchema, UpdateUserSchema, EmptySchema
+from api.models.administration.adminModels import User, Role, Group
+from api.schemas.administration.adminSchemas import UserSchema, UpdateUserSchema, GroupSchema, RoleSchema
 from api.auth import token_auth
 from api.decorators import paginated_response
 
@@ -13,11 +14,11 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 update_user_schema = UpdateUserSchema(partial=True)
 
-# group_schema = GroupSchema()
-# groups_schema = GroupSchema(many=True)
-#
-# role_schema = RoleSchema()
-# roles_schema = RoleSchema(many=True)
+group_schema = GroupSchema()
+groups_schema = GroupSchema(many=True)
+
+role_schema = RoleSchema()
+roles_schema = RoleSchema(many=True)
 
 
 @users.route('/users', methods=['POST'])
@@ -32,15 +33,22 @@ def new(args):
 
 
 @users.route('/users', methods=['GET'])
-@authenticate(token_auth)
+@authenticate(token_auth, role=['user', ['admin']])
 @paginated_response(users_schema)
 def all():
     """Retrieve all users"""
     return User.select()
 
 
+@users.route('/user/role', methods=['POST'])
+@authenticate(token_auth, role=['user', ['admin']])
+def test_roles():
+    """Assign Role to User"""
+    return "Hello {}, you are an admin or normal user!".format(token_auth.current_user())
+
+
 @users.route('/users/<int:id>', methods=['GET'])
-@authenticate(token_auth)
+@authenticate(token_auth, role=['user', ['moderator', 'admin']])
 @response(user_schema)
 @other_responses({404: 'User not found'})
 def get(id):
@@ -49,7 +57,7 @@ def get(id):
 
 
 @users.route('/users/<username>', methods=['GET'])
-@authenticate(token_auth)
+@authenticate(token_auth, role=['user', ['moderator', 'admin']])
 @response(user_schema)
 @other_responses({404: 'User not found'})
 def get_by_username(username):
@@ -81,17 +89,17 @@ def put(data):
     return user
 
 
-# @users.route('/user/role', methods=['POST'])
-# @authenticate(token_auth)
-# @body(role_schema)
-# @response(role_schema)
-# def role_add(args):
-#     """Add User Roles"""
-#     role = Role(**args)
-#     role.allowances = dict(
-#         members='r',
-#         secret_members=None  # no authorization
-#     )
-#     db.session.add(role)
-#     db.session.commit()
-#     return role
+@users.route('/user/role', methods=['POST'])
+@authenticate(token_auth, role=['admin'])
+@body(role_schema)
+@response(role_schema)
+def role_add(args):
+    """Add User Roles"""
+    role = Role(**args)
+    role.allowances = dict(
+        members='r',
+        secret_members=None  # no authorization
+    )
+    db.session.add(role)
+    db.session.commit()
+    return role

@@ -25,7 +25,7 @@ class BaseConfig(object):
     # security options
     SECRET_KEY = os.environ.get('SECRET_KEY', 'top-secret!')
     DISABLE_AUTH = as_bool(os.environ.get('DISABLE_AUTH'))
-    ACCESS_TOKEN_MINUTES = int(os.environ.get('ACCESS_TOKEN_MINUTES') or '15')
+    ACCESS_TOKEN_MINUTES = int(os.environ.get('ACCESS_TOKEN_MINUTES') or '40')
     REFRESH_TOKEN_DAYS = int(os.environ.get('REFRESH_TOKEN_DAYS') or '7')
     REFRESH_TOKEN_IN_COOKIE = as_bool(os.environ.get(
         'REFRESH_TOKEN_IN_COOKIE') or 'yes')
@@ -35,6 +35,7 @@ class BaseConfig(object):
                          'http://localhost:3000/reset'
     USE_CORS = as_bool(os.environ.get('USE_CORS') or 'yes')
     CORS_SUPPORTS_CREDENTIALS = True
+    JSON_SORT_KEYS = False
 
     # API documentation
     APIFAIRY_TITLE = 'National Export Trade Promotion API'

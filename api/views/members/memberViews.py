@@ -2,6 +2,7 @@ from apifairy.decorators import other_responses
 from flask import Blueprint, abort
 from apifairy import authenticate, body, response
 
+
 from api.app import db, authorize
 from api.models.membership.memberModel import Members, ContactPersons, MemberType
 from api.schemas.membership.memberSchema import MemberSchema, ContactPersonSchema, MembershipTypeSchema
@@ -17,8 +18,8 @@ membership_types_schema = MembershipTypeSchema(many=True)
 
 
 @members.route('members/all/', methods=['GET'])
-@authenticate(token_auth)
-@response(member_schema)
+@authenticate(token_auth, role=['admin'])
+@paginated_response(member_schema)
 def get_all_members():
     """Retrieve All Members"""
     return Members.select()
@@ -46,3 +47,11 @@ def add_member(args):
     db.session.add(member)
     db.session.commit()
     return
+
+
+@members.route('membershiptype/all/', methods=['GET'])
+@authenticate(token_auth)
+@paginated_response(membership_type_schema)
+def get_all_membershiptype():
+    """Retrieve Membership Types"""
+    return MemberType.select()

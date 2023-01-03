@@ -1,4 +1,0 @@
-"""
-
-Member Application
-"""

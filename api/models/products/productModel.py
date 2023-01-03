@@ -38,6 +38,7 @@ class Product(db.Model):
     categoryID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_category.id'), index=True)
 
     productCategory = sqla_orm.relationship("Category", secondary=productCategories, backref='netp_product')
+    applicationProduct = sqla_orm.relationship("MemberApplication", back_populates='majorProduct', lazy='noload')
 
     def __repr__(self):
         return "Product {}".format(self.text)

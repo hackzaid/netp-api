@@ -9,6 +9,7 @@ import sqlalchemy as sqla
 from sqlalchemy import orm as sqla_orm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_authorize import PermissionsMixin
+from api.models.application.applicationModels import MemberApplication
 
 from api.app import db
 
@@ -28,12 +29,14 @@ class Members(db.Model, Updateable):
     lastName = sqla.Column(sqla.String(100), nullable=False)
     village = sqla.Column(sqla.String(100), nullable=False)
     region = sqla.Column(sqla.String(100), nullable=False)
-    membershipID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_membertype.id'), index=True)
+    membershipID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_membertype.id'))
     date_joined = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    membershipType = sqla_orm.relationship('MemberType', back_populates='type')
     contactPersons = sqla_orm.relationship('ContactPersons', back_populates='memberContact')
+    membershipType = sqla_orm.relationship('MemberType', back_populates='typeMember')
+    memberApplication = sqla_orm.relationship('MemberApplication', back_populates='member', lazy='noload')
+
 
     def __repr__(self):
         return '<Members {}>'.format(self.text)
@@ -45,10 +48,31 @@ class MemberType(db.Model):
     id = sqla.Column(sqla.Integer, primary_key=True)
     title = sqla.Column(sqla.String(255), unique=True)
 
-    type = sqla_orm.relationship('Members', back_populates='membershipType', lazy='noload')
+    typeMember = sqla_orm.relationship('Members', back_populates='membershipType', lazy='noload')
+    subCategory = sqla_orm.relationship('MemberSubCategory', back_populates='memberType', lazy='noload')
+    applicationMembership = sqla_orm.relationship('MemberApplication', back_populates='membershipType', lazy='noload')
+
+
 
     def __repr__(self):
         return '<MemberType {}>'.format(self.text)
+
+
+class MemberSubCategory(db.Model):
+    __tablename__ = 'netp_membershipsubcat'
+
+    id = sqla.Column(sqla.Integer, primary_key=True)
+    title = sqla.Column(sqla.String(255), unique=True)
+    typeID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_membertype.id'))
+
+    memberType = sqla_orm.relationship('MemberType', back_populates='subCategory', lazy='noload')
+    applicationSubCat = sqla_orm.relationship('MemberApplication', back_populates='memberSubCategory', lazy='noload')
+
+
+
+
+    def __repr__(self):
+        return '<MemberSubCategory {}>'.format(self.title)
 
 
 class ContactPersons(Updateable, db.Model):
