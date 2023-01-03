@@ -17,3 +17,14 @@ application_schema = ApplicationSchema()
 def get_application():
     """Get Member Application"""
     return MemberApplication.select()
+
+
+@application.route('/application', methods=['POST'])
+@body(application_schema)
+@response(application_schema)
+def new_application(data):
+    """New Application for Member"""
+    newApplication = MemberApplication(**data)
+    db.session.add(newApplication)
+    db.session.commit()
+    return newApplication
