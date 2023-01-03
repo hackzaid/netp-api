@@ -10,6 +10,11 @@ from apifairy import APIFairy
 from configs.config import BaseConfig, ProdConfig
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_authorize import Authorize
+from flask_login import current_user
+
+
+def my_current_user(user):
+    return g.user
 
 
 db = Alchemical()
@@ -19,13 +24,12 @@ cors = CORS()
 mail = Mail()
 apifairy = APIFairy()
 
-authorize = Authorize()
+authorize = Authorize(current_user=my_current_user)
 
 
 def create_app(config_class=ProdConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
-
     # extensions
     from api import models
 
@@ -41,10 +45,11 @@ def create_app(config_class=ProdConfig):
     # blueprints
     from api.errors import errors
     from api.tokens import tokens
-    from api.views.administration.users import users
+    from api.views.administration.adminViews import users
 
     from api.views.members.memberViews import members
     from api.views.products.productViews import product
+    from api.views.application.applicationViews import application
 
     app.register_blueprint(errors)
     app.register_blueprint(tokens, url_prefix='/api')
@@ -52,6 +57,7 @@ def create_app(config_class=ProdConfig):
 
     app.register_blueprint(members, url_prefix='/api')
     app.register_blueprint(product, url_prefix='/api')
+    app.register_blueprint(application, url_prefix='/api')
 
     # define the shell context
     @app.shell_context_processor
