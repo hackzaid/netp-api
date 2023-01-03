@@ -24,9 +24,6 @@ def get_user_roles(user):
     return user.get_roles()
 
 
-@token_auth.get_user_groups
-def get_user_group(user):
-    return user.get_groups()
 
 
 @basic_auth.error_handler
