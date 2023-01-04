@@ -17,7 +17,7 @@ mail = Mail()
 apifairy = APIFairy()
 
 
-def create_app(config_class=ProdConfig):
+def create_app(config_class=BaseConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
 

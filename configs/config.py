@@ -18,7 +18,9 @@ class BaseConfig(object):
     DB_PASSWORD = os.environ['DB_PASSWORD']
     DB_HOST = os.environ['DB_HOST']
     DATABASE_NAME = os.environ['DATABASE_NAME']
-    ALCHEMICAL_DATABASE_URL = "mysql+pymysql://%s:%s@%s:3306/%s" % (DB_USERNAME, DB_PASSWORD, DB_HOST, DATABASE_NAME)
+    DB_PORT = os.environ['DB_PORT']
+    ALCHEMICAL_DATABASE_URL = "mysql+pymysql://%s:%s@%s:%s/%s" % (
+        DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DATABASE_NAME)
     ALCHEMICAL_ENGINE_OPTIONS = {'echo': as_bool(os.environ.get('SQL_ECHO'))}
     ALCHEMICAL_ECHO = True
 
@@ -32,7 +34,7 @@ class BaseConfig(object):
     REFRESH_TOKEN_IN_BODY = as_bool(os.environ.get('REFRESH_TOKEN_IN_BODY'))
     RESET_TOKEN_MINUTES = int(os.environ.get('RESET_TOKEN_MINUTES') or '15')
     PASSWORD_RESET_URL = os.environ.get('PASSWORD_RESET_URL') or \
-                         'http://localhost:3000/reset'
+        'http://localhost:3000/reset'
     USE_CORS = as_bool(os.environ.get('USE_CORS') or 'yes')
     CORS_SUPPORTS_CREDENTIALS = True
 
@@ -62,7 +64,8 @@ class ProdConfig(BaseConfig):
     DB_PASSWORD = os.environ['PROD_DB_PASSWORD']
     DB_HOST = os.environ['PROD_DB_HOST']
     DATABASE_NAME = os.environ['PROD_DATABASE_NAME']
-    ALCHEMICAL_DATABASE_URL = "mysql+pymysql://%s:%s@%s:3306/%s" % (DB_USERNAME, DB_PASSWORD, DB_HOST, DATABASE_NAME)
+    ALCHEMICAL_DATABASE_URL = "mysql+pymysql://%s:%s@%s:3306/%s" % (
+        DB_USERNAME, DB_PASSWORD, DB_HOST, DATABASE_NAME)
     ALCHEMICAL_ENGINE_OPTIONS = {'echo': as_bool(os.environ.get('SQL_ECHO'))}
 
     # security options
@@ -75,7 +78,7 @@ class ProdConfig(BaseConfig):
     REFRESH_TOKEN_IN_BODY = as_bool(os.environ.get('REFRESH_TOKEN_IN_BODY'))
     RESET_TOKEN_MINUTES = int(os.environ.get('RESET_TOKEN_MINUTES') or '15')
     PASSWORD_RESET_URL = os.environ.get('PASSWORD_RESET_URL') or \
-                         'http://localhost:3000/reset'
+        'http://localhost:3000/reset'
     USE_CORS = as_bool(os.environ.get('USE_CORS') or 'yes')
     CORS_SUPPORTS_CREDENTIALS = True
     JSON_SORT_KEYS = False
