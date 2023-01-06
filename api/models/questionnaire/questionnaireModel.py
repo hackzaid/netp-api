@@ -108,3 +108,37 @@ class Answers(Updateable, db.Model):
 
     def __repr__(self):
         return '<Answers {}>'.format(self.text)
+
+
+class QuestionnaireMember(Updateable, db.Model):
+    __tablename__ = 'netp_questionnaire_member'
+
+    id = sqla.Column(sqla.Integer, primary_key=True)
+    member_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_members.id'),
+                            index=True)
+    questionnaire_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_questionnaires.id'),
+                                   index=True)
+    questionnaire = sqla_orm.relationship('Questionnaires')
+    member = sqla_orm.relationship('Members')
+    created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
+    updated_on = sqla.Column(
+        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return '<QuestionnaireMember {}>'.format(self.text)
+
+
+class QuestionnaireAuditors(Updateable, db.Model):
+    __tablename__ = 'netp_questionnaire_auditor'
+
+    id = sqla.Column(sqla.Integer, primary_key=True)
+    questionnaire_member_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_questionnaire_member.id'),
+                                          index=True)
+    questionnaire_member = sqla_orm.relationship('QuestionnaireMember')
+
+    created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
+    updated_on = sqla.Column(
+        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return '<QuestionnaireAuditors {}>'.format(self.text)
