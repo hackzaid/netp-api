@@ -38,6 +38,7 @@ def create_app(config_class=BaseConfig):
     from api.posts import posts
     from api.views.members.memberViews import members
     from api.views.products.productViews import product
+    from api.views.questionnaires.questionnaireViews import questionnaire
 
     app.register_blueprint(errors)
     app.register_blueprint(tokens, url_prefix='/api')
@@ -45,6 +46,7 @@ def create_app(config_class=BaseConfig):
     app.register_blueprint(posts, url_prefix='/api')
     app.register_blueprint(members, url_prefix='/api')
     app.register_blueprint(product, url_prefix='/api')
+    app.register_blueprint(questionnaire, url_prefix='/api')
 
     # define the shell context
     @app.shell_context_processor
