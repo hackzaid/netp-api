@@ -13,9 +13,11 @@ class QuestionnaireSchema(ma.SQLAlchemySchema):
     id = ma.auto_field(dump_only=True)
     name = ma.String(
         required=True, validate=validate.Length(min=3, max=100))
+    created_on = ma.auto_field(dump_only=True)
+    updated_on = ma.auto_field(dump_only=True)
 
-    auditors = ma.Nested(
-        'AuditorSchema', many=True, dump_only=True)
+    # auditors = ma.Nested(
+    #     'AuditorSchema', many=True, dump_only=True)
 
     sections = ma.Nested(
         'QuestionnaireSectionSchema', many=True, dump_only=True)
@@ -66,6 +68,20 @@ class AnswerSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field(dump_only=True)
     answer = ma.String(
-        required=True, validate=validate.Length(min=3, max=100))
+        required=True, validate=validate.Length(min=1, max=100))
     question_id = ma.Integer(required=True)
     member_id = ma.Integer(required=True)
+    # I think we should include auditors here.
+
+
+class QuestionnaireMemberSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Answers
+        ordered = True
+
+    id = ma.auto_field(dump_only=True)
+    answer = ma.String(
+        required=True, validate=validate.Length(min=1, max=100))
+    question_id = ma.Integer(required=True)
+    member_id = ma.Integer(required=True)
+    # I think we should include auditors here.
