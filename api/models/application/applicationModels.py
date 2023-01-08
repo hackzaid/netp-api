@@ -20,8 +20,10 @@ class MemberApplication(db.Model, Updateable):
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     regNo = sqla.Column(sqla.String(255), unique=True)
-    memberID = sqla.Column(sqla.Integer, sqla.ForeignKey('users.id'), index=True)
-    productID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_product.id'), index=True)
+    memberID = sqla.Column(
+        sqla.Integer, sqla.ForeignKey('users.id'), index=True)
+    productID = sqla.Column(sqla.Integer, sqla.ForeignKey(
+        'netp_product.id'), index=True)
     businessType = sqla.Column(sqla.String(155))
     companyDescription = sqla.Column(sqla.String(155))
     companyRegCert = sqla.Column(sqla.String(155), unique=True)
@@ -30,8 +32,10 @@ class MemberApplication(db.Model, Updateable):
     exportNo = sqla.Column(sqla.String(155), unique=True)
     applicationStatus = sqla.Column(sqla.String(155))
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
-    updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_on = sqla.Column(
+        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    member = sqla_orm.relationship("User", back_populates='memberApplication', lazy='noload')
-    majorProduct = sqla_orm.relationship("Product", back_populates='applicationProduct', lazy='noload')
-
+    member = sqla_orm.relationship(
+        "User", back_populates='memberApplication', lazy='noload')
+    majorProduct = sqla_orm.relationship(
+        "Product", back_populates='applicationProduct', lazy='noload')
