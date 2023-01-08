@@ -2,7 +2,9 @@ from marshmallow import validate, validates, validates_schema, \
     ValidationError, post_dump
 from api import ma, db
 from api.auth import token_auth
-from api.models.questionnaire.questionnaireModel import Questionnaires, Auditors, QuestionnaireSections, Questions, Answers
+from api.models.questionnaire.questionnaireModel import QuestionnaireMember, \
+    Questionnaires, Auditors, QuestionnaireSections, Questions, Answers, \
+    QuestionnaireAuditors
 
 
 class QuestionnaireSchema(ma.SQLAlchemySchema):
@@ -15,10 +17,6 @@ class QuestionnaireSchema(ma.SQLAlchemySchema):
         required=True, validate=validate.Length(min=3, max=100))
     created_on = ma.auto_field(dump_only=True)
     updated_on = ma.auto_field(dump_only=True)
-
-    # auditors = ma.Nested(
-    #     'AuditorSchema', many=True, dump_only=True)
-
     sections = ma.Nested(
         'QuestionnaireSectionSchema', many=True, dump_only=True)
 
@@ -33,7 +31,20 @@ class AuditorSchema(ma.SQLAlchemySchema):
         required=True, validate=validate.Length(min=3, max=100))
     title = ma.String(
         required=True, validate=validate.Length(min=3, max=1000))
-    questionnaire_id = ma.Integer(required=True)
+    created_on = ma.auto_field(dump_only=True)
+    updated_on = ma.auto_field(dump_only=True)
+
+
+class QuestionnaireAuditorsSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = QuestionnaireAuditors
+        ordered = True
+
+    id = ma.auto_field(dump_only=True)
+    questionnaire_member_id = ma.Integer(required=True)
+    auditor_id = ma.Integer(required=True)
+    created_on = ma.auto_field(dump_only=True)
+    updated_on = ma.auto_field(dump_only=True)
 
 
 class QuestionnaireSectionSchema(ma.SQLAlchemySchema):
@@ -71,17 +82,22 @@ class AnswerSchema(ma.SQLAlchemySchema):
         required=True, validate=validate.Length(min=1, max=100))
     question_id = ma.Integer(required=True)
     member_id = ma.Integer(required=True)
-    # I think we should include auditors here.
 
 
 class QuestionnaireMemberSchema(ma.SQLAlchemySchema):
     class Meta:
-        model = Answers
+        model = QuestionnaireMember
         ordered = True
 
     id = ma.auto_field(dump_only=True)
-    answer = ma.String(
-        required=True, validate=validate.Length(min=1, max=100))
-    question_id = ma.Integer(required=True)
+    questionnaire_id = ma.Integer(required=True)
     member_id = ma.Integer(required=True)
-    # I think we should include auditors here.
+    created_on = ma.auto_field(dump_only=True)
+    updated_on = ma.auto_field(dump_only=True)
+
+    # questionnaires = ma.Nested(
+    #     'QuestionnaireSchema', many=True, dump_only=True)
+    # auditors = ma.Nested(
+    #     'QuestionnaireAuditorsSchema', many=True, dump_only=True)
+    # answers = ma.Nested(
+    #     'AnswerSchema', many=True, dump_only=True)

@@ -23,33 +23,11 @@ class Questionnaires(Updateable, db.Model):
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(
         sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    auditors = sqla_orm.relationship(
-        'Auditors', back_populates='questionnaire')
     sections = sqla_orm.relationship(
         'QuestionnaireSections', back_populates='questionnaire')
 
     def __repr__(self):
         return '<Questionnaires {}>'.format(self.text)
-
-
-class Auditors(Updateable, db.Model):
-    __tablename__ = 'netp_auditors'
-
-    id = sqla.Column(sqla.Integer, primary_key=True)
-    name = sqla.Column(sqla.String(100), nullable=False)
-    title = sqla.Column(sqla.String(1000), nullable=False)
-    questionnaire_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_questionnaires.id'),
-                                   index=True)
-    created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
-    updated_on = sqla.Column(
-        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    questionnaire = sqla_orm.relationship(
-        'Questionnaires', back_populates='auditors')
-
-    def __repr__(self):
-        return '<Auditors {}>'.format(self.text)
 
 
 class QuestionnaireSections(Updateable, db.Model):
@@ -91,35 +69,42 @@ class Questions(Updateable, db.Model):
         return '<Questions {}>'.format(self.text)
 
 
-class Answers(Updateable, db.Model):
-    __tablename__ = 'netp_answers'
+class Auditors(Updateable, db.Model):
+    __tablename__ = 'netp_auditors'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
-    answer = sqla.Column(sqla.String(100), nullable=False)
-    question_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_questions.id'),
-                              index=True)
-    member_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_members.id'),
-                            index=True)
-    question = sqla_orm.relationship('Questions')
-    member = sqla_orm.relationship('Members')
+    name = sqla.Column(sqla.String(100), nullable=False)
+    title = sqla.Column(sqla.String(100), nullable=False)
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(
         sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
-        return '<Answers {}>'.format(self.text)
+        return '<Auditors {}>'.format(self.text)
+
+
+class QuestionnaireAuditors(Updateable, db.Model):
+    __tablename__ = 'netp_questionnaire_auditors'
+
+    id = sqla.Column(sqla.Integer, primary_key=True)
+    questionnaire_member_id = sqla.Column(sqla.Integer)
+    auditor_id = sqla.Column(sqla.Integer)
+
+    created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
+    updated_on = sqla.Column(
+        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return '<QuestionnaireAuditors {}>'.format(self.text)
 
 
 class QuestionnaireMember(Updateable, db.Model):
     __tablename__ = 'netp_questionnaire_member'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
-    member_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_members.id'),
-                            index=True)
-    questionnaire_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_questionnaires.id'),
-                                   index=True)
-    questionnaire = sqla_orm.relationship('Questionnaires')
-    member = sqla_orm.relationship('Members')
+    member_id = sqla.Column(sqla.Integer)
+    questionnaire_id = sqla.Column(sqla.Integer)
+
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(
         sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -128,17 +113,18 @@ class QuestionnaireMember(Updateable, db.Model):
         return '<QuestionnaireMember {}>'.format(self.text)
 
 
-class QuestionnaireAuditors(Updateable, db.Model):
-    __tablename__ = 'netp_questionnaire_auditor'
+class Answers(Updateable, db.Model):
+    __tablename__ = 'netp_answers'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
-    questionnaire_member_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_questionnaire_member.id'),
-                                          index=True)
-    questionnaire_member = sqla_orm.relationship('QuestionnaireMember')
-
+    answer = sqla.Column(sqla.String(100), nullable=False)
+    question_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_questions.id'),
+                              index=True)
+    questionnaire_member_id = sqla.Column(sqla.Integer)
+    question = sqla_orm.relationship('Questions')
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(
         sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
-        return '<QuestionnaireAuditors {}>'.format(self.text)
+        return '<Answers {}>'.format(self.text)
