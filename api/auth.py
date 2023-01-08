@@ -19,14 +19,21 @@ def verify_password(username, password):
             return user
 
 
+@token_auth.get_user_roles
+def get_user_roles(user):
+    return user.get_roles()
+
+
+
+
 @basic_auth.error_handler
 def basic_auth_error(status=401):
     error = (Forbidden if status == 403 else Unauthorized)()
     return {
-        'code': error.code,
-        'message': error.name,
-        'description': error.description,
-    }, error.code, {'WWW-Authenticate': 'Form'}
+               'code': error.code,
+               'message': error.name,
+               'description': error.description,
+           }, error.code, {'WWW-Authenticate': 'Form'}
 
 
 @token_auth.verify_token
@@ -43,7 +50,7 @@ def verify_token(access_token):
 def token_auth_error(status=401):
     error = (Forbidden if status == 403 else Unauthorized)()
     return {
-        'code': error.code,
-        'message': error.name,
-        'description': error.description,
-    }, error.code
+               'code': error.code,
+               'message': error.name,
+               'description': error.description,
+           }, error.code

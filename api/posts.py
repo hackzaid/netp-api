@@ -4,10 +4,10 @@ from apifairy import authenticate, body, response, other_responses
 from api import db
 from api.models.administration.adminModels import User
 from api.models.models import Post
-from api.schemas.schemas import PostSchema
+from api.schemas.administration.adminSchemas import PostSchema
 from api.auth import token_auth
 from api.decorators import paginated_response
-from api.schemas.schemas import DateTimePaginationSchema
+from api.schemas.administration.adminSchemas import DateTimePaginationSchema
 
 posts = Blueprint('posts', __name__)
 post_schema = PostSchema()

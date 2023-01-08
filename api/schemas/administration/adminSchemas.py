@@ -2,61 +2,9 @@ from marshmallow import validate, validates, validates_schema, \
     ValidationError, post_dump
 from api import ma, db
 from api.auth import token_auth
-from api.models.administration.adminModels import User, Post
-
-paginated_schema_cache = {}
+from api.models.administration.adminModels import User, Group, Role
 
 
-class EmptySchema(ma.Schema):
-    pass
-
-
-class DateTimePaginationSchema(ma.Schema):
-    class Meta:
-        ordered = True
-
-    limit = ma.Integer()
-    offset = ma.Integer()
-    after = ma.DateTime(load_only=True)
-    count = ma.Integer(dump_only=True)
-    total = ma.Integer(dump_only=True)
-
-    @validates_schema
-    def validate_schema(self, data, **kwargs):
-        if data.get('offset') is not None and data.get('after') is not None:
-            raise ValidationError('Cannot specify both offset and after')
-
-
-class StringPaginationSchema(ma.Schema):
-    class Meta:
-        ordered = True
-
-    limit = ma.Integer()
-    offset = ma.Integer()
-    after = ma.String(load_only=True)
-    count = ma.Integer(dump_only=True)
-    total = ma.Integer(dump_only=True)
-
-    @validates_schema
-    def validate_schema(self, data, **kwargs):
-        if data.get('offset') is not None and data.get('after') is not None:
-            raise ValidationError('Cannot specify both offset and after')
-
-
-def PaginatedCollection(schema, pagination_schema=StringPaginationSchema):
-    if schema in paginated_schema_cache:
-        return paginated_schema_cache[schema]
-
-    class PaginatedSchema(ma.Schema):
-        class Meta:
-            ordered = True
-
-        pagination = ma.Nested(pagination_schema)
-        data = ma.Nested(schema, many=True)
-
-    PaginatedSchema.__name__ = 'Paginated{}'.format(schema.__class__.__name__)
-    paginated_schema_cache[schema] = PaginatedSchema
-    return PaginatedSchema
 
 
 class UserSchema(ma.SQLAlchemySchema):
@@ -76,8 +24,10 @@ class UserSchema(ma.SQLAlchemySchema):
     about_me = ma.auto_field()
     first_seen = ma.auto_field(dump_only=True)
     last_seen = ma.auto_field(dump_only=True)
-    posts_url = ma.URLFor('posts.user_all', values={'id': '<id>'},
-                          dump_only=True)
+    roles = ma.Nested('RoleSchema', many=True, dump_only=True, exclude=['id'])
+
+    # posts_url = ma.URLFor('posts.user_all', values={'id': '<id>'},
+    #                       dump_only=True)
 
     @validates('username')
     def validate_username(self, value):
@@ -113,23 +63,22 @@ class UpdateUserSchema(UserSchema):
             raise ValidationError('Password is incorrect')
 
 
-class PostSchema(ma.SQLAlchemySchema):
+class GroupSchema(ma.SQLAlchemySchema):
     class Meta:
-        model = Post
-        include_fk = True
         ordered = True
+        model = Group
 
     id = ma.auto_field(dump_only=True)
-    url = ma.String(dump_only=True)
-    text = ma.auto_field(required=True, validate=validate.Length(
-        min=1, max=280))
-    timestamp = ma.auto_field(dump_only=True)
-    author = ma.Nested(UserSchema, dump_only=True)
+    name = ma.String(required=True)
 
-    @post_dump
-    def fix_datetimes(self, data, **kwargs):
-        data['timestamp'] += 'Z'
-        return data
+
+class RoleSchema(ma.SQLAlchemySchema):
+    class Meta:
+        ordered = True
+        model = Role
+
+    id = ma.auto_field(dump_only=True)
+    name = ma.String(required=True)
 
 
 class TokenSchema(ma.Schema):

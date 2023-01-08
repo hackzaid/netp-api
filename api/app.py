@@ -1,13 +1,21 @@
 import sentry_sdk
-from flask import Flask, redirect, url_for, request
+from flask import Flask, redirect, url_for, request, g
 from alchemical.flask import Alchemical
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_mail import Mail
 from apifairy import APIFairy
+
 from configs.config import BaseConfig, ProdConfig
 from sentry_sdk.integrations.flask import FlaskIntegration
+from flask_authorize import Authorize
+from flask_login import current_user
+
+
+def my_current_user(user):
+    return g.user
+
 
 db = Alchemical()
 migrate = Migrate()
@@ -16,13 +24,15 @@ cors = CORS()
 mail = Mail()
 apifairy = APIFairy()
 
+authorize = Authorize(current_user=my_current_user)
+
 
 def create_app(config_class=BaseConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
-
     # extensions
     from api import models
+
     db.init_app(app)
     migrate.init_app(app, db)
     ma.init_app(app)
@@ -30,23 +40,27 @@ def create_app(config_class=BaseConfig):
         cors.init_app(app)
     mail.init_app(app)
     apifairy.init_app(app)
+    authorize.init_app(app)
 
     # blueprints
     from api.errors import errors
     from api.tokens import tokens
-    from api.users import users
-    from api.posts import posts
+    from api.views.administration.adminViews import users
+
     from api.views.members.memberViews import members
     from api.views.products.productViews import product
     from api.views.questionnaires.questionnaireViews import questionnaire
+    from api.views.application.applicationViews import application
+
 
     app.register_blueprint(errors)
     app.register_blueprint(tokens, url_prefix='/api')
     app.register_blueprint(users, url_prefix='/api')
-    app.register_blueprint(posts, url_prefix='/api')
+
     app.register_blueprint(members, url_prefix='/api')
     app.register_blueprint(product, url_prefix='/api')
     app.register_blueprint(questionnaire, url_prefix='/api')
+    app.register_blueprint(application, url_prefix='/api')
 
     # define the shell context
     @app.shell_context_processor

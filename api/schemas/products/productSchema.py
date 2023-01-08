@@ -13,7 +13,7 @@ class ProductSchema(ma.SQLAlchemySchema):
     id = ma.auto_field(dump_only=True)
     productName = ma.String(required=True)
     categoryID = ma.String(required=True)
-    productCategory = ma.Nested('CategorySchema', many=True)
+    productCategory = ma.Nested('CategorySchema', many=True, exclude=['id'])
 
 
 class CategorySchema(ma.SQLAlchemySchema):
