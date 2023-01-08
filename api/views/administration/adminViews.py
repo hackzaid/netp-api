@@ -40,11 +40,20 @@ def all():
     return User.select()
 
 
-@users.route('/user/role', methods=['POST'])
+@users.route('/user/manage/role', methods=['POST', 'PUT'])
 @authenticate(token_auth, role=['user', ['admin']])
-def test_roles():
+@body(role_schema)
+@response(role_schema)
+def test_roles(args):
     """Assign Role to User"""
-    return "Hello {}, you are an admin or normal user!".format(token_auth.current_user())
+    role = Role(**args)
+    role.allowances = dict(
+        members='r',
+        secret_members=None  # no authorization
+    )
+    db.session.add(role)
+    db.session.commit()
+    return role
 
 
 @users.route('/users/<int:id>', methods=['GET'])

@@ -42,7 +42,7 @@ class BaseConfig(object):
     # API documentation
     APIFAIRY_TITLE = 'National Export Trade Promotion API'
     APIFAIRY_VERSION = 'V1.0'
-    APIFAIRY_UI = os.environ.get('DOCS_UI', 'elements')
+    APIFAIRY_UI = os.environ.get('DOCS_UI', 'rapidoc')
 
     # email options
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'localhost')
