@@ -5,8 +5,6 @@ from api.auth import token_auth
 from api.models.administration.adminModels import User, Group, Role
 
 
-
-
 class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         model = User

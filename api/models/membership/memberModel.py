@@ -29,14 +29,15 @@ class Members(db.Model, Updateable):
     lastName = sqla.Column(sqla.String(100), nullable=False)
     village = sqla.Column(sqla.String(100), nullable=False)
     region = sqla.Column(sqla.String(100), nullable=False)
-    membershipID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_membertype.id'))
+    membershipTypeID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_membertype.id'))
+    membershipSubCatID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_membershipsubcat.id'))
     date_joined = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     contactPersons = sqla_orm.relationship('ContactPersons', back_populates='memberContact')
     membershipType = sqla_orm.relationship('MemberType', back_populates='typeMember')
+    membershipSubCategory = sqla_orm.relationship('MemberSubCategory', back_populates='membersubcat')
     memberApplication = sqla_orm.relationship('MemberApplication', back_populates='member', lazy='noload')
-
 
     def __repr__(self):
         return '<Members {}>'.format(self.text)
@@ -50,9 +51,6 @@ class MemberType(db.Model):
 
     typeMember = sqla_orm.relationship('Members', back_populates='membershipType', lazy='noload')
     subCategory = sqla_orm.relationship('MemberSubCategory', back_populates='memberType', lazy='noload')
-    applicationMembership = sqla_orm.relationship('MemberApplication', back_populates='membershipType', lazy='noload')
-
-
 
     def __repr__(self):
         return '<MemberType {}>'.format(self.text)
@@ -66,10 +64,7 @@ class MemberSubCategory(db.Model):
     typeID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_membertype.id'))
 
     memberType = sqla_orm.relationship('MemberType', back_populates='subCategory', lazy='noload')
-    applicationSubCat = sqla_orm.relationship('MemberApplication', back_populates='memberSubCategory', lazy='noload')
-
-
-
+    membersubcat = sqla_orm.relationship('Members', back_populates='membershipSubCategory', lazy='noload')
 
     def __repr__(self):
         return '<MemberSubCategory {}>'.format(self.title)

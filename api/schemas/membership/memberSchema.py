@@ -17,7 +17,8 @@ class MemberSchema(ma.SQLAlchemySchema):
     lastName = ma.String(required=True)
     village = ma.String(required=True)
     region = ma.String(required=True)
-    membershipID = ma.Integer(required=True)
+    membershipTypeID = ma.Integer(required=True)
+    membershipSubCatID = ma.Integer(required=False)
 
     contactPersons = ma.Nested('ContactPersonSchema', many=True, dump_only=True)
     membershipType = ma.Nested('MembershipTypeSchema',  dump_only=True)
