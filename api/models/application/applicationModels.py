@@ -27,7 +27,7 @@ class MemberApplication(db.Model, Updateable):
     companyRegCert = sqla.Column(sqla.String(155), unique=True)
     exportRegCert = sqla.Column(sqla.String(155), unique=True)
     companyProfile = sqla.Column(sqla.String(155), unique=True)
-    exportNo = sqla.Column(sqla.String, unique=True)
+    exportNo = sqla.Column(sqla.String(155), unique=True)
     applicationStatus = sqla.Column(sqla.String(155))
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
