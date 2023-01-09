@@ -28,7 +28,6 @@ authorize = Authorize(current_user=my_current_user)
 
 
 def create_app(config_class=ProdConfig):
-def create_app(config_class=BaseConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
     # extensions
