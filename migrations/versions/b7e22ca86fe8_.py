@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 4c14c9689783
+Revision ID: b7e22ca86fe8
 Revises: 
-Create Date: 2023-01-09 09:58:06.064400
+Create Date: 2023-01-09 10:47:28.555565
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import flask_authorize
 
 
 # revision identifiers, used by Alembic.
-revision = '4c14c9689783'
+revision = 'b7e22ca86fe8'
 down_revision = None
 branch_labels = None
 depends_on = None
