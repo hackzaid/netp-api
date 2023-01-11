@@ -90,6 +90,13 @@ class AssignRoleSchema(ma.Schema):
     role_id = ma.Integer(required=True)
 
 
+class AssignRoleSchema(ma.Schema):
+    class Meta:
+        ordered = True
+
+    role_id = ma.Integer(required=True)
+
+
 class TokenSchema(ma.Schema):
     class Meta:
         ordered = True
