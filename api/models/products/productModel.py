@@ -6,6 +6,7 @@ from time import time
 from flask import current_app, url_for
 import jwt
 import sqlalchemy as sqla
+from flask_authorize import PermissionsMixin
 from sqlalchemy import orm as sqla_orm
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -29,7 +30,7 @@ class Category(db.Model):
     catDescription = sqla.Column(sqla.String(150), nullable=True)
 
     def __repr__(self):
-        return "Category {}".format(self.text)
+        return "Category {}".format(self.catName)
 
 
 class Product(db.Model):
@@ -46,4 +47,4 @@ class Product(db.Model):
         "MemberApplication", back_populates='majorProduct', lazy='noload')
 
     def __repr__(self):
-        return "Product {}".format(self.text)
+        return "Product {}".format(self.productName)

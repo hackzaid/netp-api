@@ -12,8 +12,10 @@ class ProductSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field(dump_only=True)
     productName = ma.String(required=True)
-    categoryID = ma.String(required=True)
-    productCategory = ma.Nested('CategorySchema', many=True, exclude=['id'])
+    categoryID = ma.Integer(required=True)
+    productCategory = ma.Nested('CategorySchema', exclude=['id'], dump_only=True)
+    date_added = ma.String(dump_only=True)
+    updated_on = ma.String(dump_only=True)
 
 
 class CategorySchema(ma.SQLAlchemySchema):
@@ -23,4 +25,4 @@ class CategorySchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field(dump_only=True)
     catName = ma.String(required=True)
-    catDetails = ma.String(required=True)
+    catDescription = ma.String(required=True)

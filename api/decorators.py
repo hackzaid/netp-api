@@ -40,7 +40,7 @@ def paginated_response(schema, max_limit=25, order_by=None,
                 query = select_query.limit(limit).filter(order_condition)
                 offset = db.session.scalar(sqla.select(
                     sqla.func.count()).select_from(select_query.filter(
-                        offset_condition)))
+                    offset_condition)))
             else:
                 if offset is None:
                     offset = 0
@@ -62,3 +62,5 @@ def paginated_response(schema, max_limit=25, order_by=None,
             schema, pagination_schema=pagination_schema))(paginate))
 
     return inner
+
+

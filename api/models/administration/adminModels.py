@@ -212,7 +212,7 @@ class Group(db.Model, RestrictionsMixin):
     name = sqla.Column(sqla.String(255), nullable=False, unique=True)
 
 
-class Role(db.Model, AllowancesMixin):
+class Role(db.Model, RestrictionsMixin):
     __tablename__ = 'ntep_roles'
 
     id = sqla.Column(sqla.Integer, primary_key=True)

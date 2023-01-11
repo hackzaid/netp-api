@@ -4,8 +4,10 @@ from apifairy import authenticate, body, response
 from flask_login import current_user
 
 from api import db
-from api.models.administration.adminModels import User, Role, Group
-from api.schemas.administration.adminSchemas import UserSchema, UpdateUserSchema, GroupSchema, RoleSchema
+from api.app import authorize
+from api.models.administration.adminModels import User, Role, Group, UserRole
+from api.schemas.administration.adminSchemas import UserSchema, UpdateUserSchema, GroupSchema, RoleSchema, \
+    AssignRoleSchema
 from api.auth import token_auth
 from api.decorators import paginated_response
 
@@ -19,6 +21,8 @@ groups_schema = GroupSchema(many=True)
 
 role_schema = RoleSchema()
 roles_schema = RoleSchema(many=True)
+
+assign_role_schema = AssignRoleSchema()
 
 
 @users.route('/users', methods=['POST'])
@@ -40,20 +44,18 @@ def all():
     return User.select()
 
 
-@users.route('/user/manage/role', methods=['POST', 'PUT'])
+@users.route('/user/manage/role/', methods=['POST'])
 @authenticate(token_auth, role=['user', ['admin']])
-@body(role_schema)
+@body(assign_role_schema)
 @response(role_schema)
-def test_roles(args):
+def assign_roles(args):
     """Assign Role to User"""
-    role = Role(**args)
-    role.allowances = dict(
-        members='r',
-        secret_members=None  # no authorization
-    )
+    user = db.session.get(User, 1)
+    role = db.session.get(Role, assign_role_schema.role_id)
+    user.roles.append(role)
     db.session.add(role)
     db.session.commit()
-    return role
+    return {'user': 'firstName {}'.format(user.firstName)}
 
 
 @users.route('/users/<int:id>', methods=['GET'])
@@ -99,16 +101,23 @@ def put(data):
 
 
 @users.route('/user/role', methods=['POST'])
-@authenticate(token_auth, role=['admin'])
+@authenticate(token_auth)
 @body(role_schema)
 @response(role_schema)
 def role_add(args):
     """Add User Roles"""
     role = Role(**args)
-    role.allowances = dict(
-        members='r',
-        secret_members=None  # no authorization
+    role.restrictions = dict(
+        netp_product=['create', 'update', 'delete']
     )
     db.session.add(role)
     db.session.commit()
     return role
+
+
+@users.route('/roles', methods=['GET'])
+@authenticate(token_auth)
+@paginated_response(role_schema)
+def get_roles():
+    """Get All Roles"""
+    return Role.select()

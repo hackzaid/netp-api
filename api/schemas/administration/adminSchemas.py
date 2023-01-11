@@ -2,7 +2,7 @@ from marshmallow import validate, validates, validates_schema, \
     ValidationError, post_dump
 from api import ma, db
 from api.auth import token_auth
-from api.models.administration.adminModels import User, Group, Role
+from api.models.administration.adminModels import User, Group, Role, UserRole, UserGroup
 
 
 class UserSchema(ma.SQLAlchemySchema):
@@ -77,6 +77,13 @@ class RoleSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field(dump_only=True)
     name = ma.String(required=True)
+
+
+class AssignRoleSchema(ma.Schema):
+    class Meta:
+        ordered = True
+
+    role_id = ma.Integer(required=True)
 
 
 class TokenSchema(ma.Schema):

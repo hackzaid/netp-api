@@ -1,6 +1,9 @@
+from functools import wraps
+
 from flask import current_app
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
-from werkzeug.exceptions import Unauthorized, Forbidden
+from werkzeug.exceptions import Unauthorized, Forbidden, abort
+from flask_login import current_user
 
 from api.app import db
 from api.models.administration.adminModels import User
