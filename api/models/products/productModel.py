@@ -6,17 +6,11 @@ from time import time
 from flask import current_app, url_for
 import jwt
 import sqlalchemy as sqla
+from flask_authorize import PermissionsMixin
 from sqlalchemy import orm as sqla_orm
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from api.app import db
-
-productCategories = sqla.Table(
-    'netp_productCategories',
-    db.Model.metadata,
-    sqla.Column('product_id', sqla.Integer, sqla.ForeignKey('netp_product.id')),
-    sqla.Column('netp_category', sqla.Integer, sqla.ForeignKey('netp_category.id'))
-)
 
 
 class Category(db.Model):
@@ -27,7 +21,7 @@ class Category(db.Model):
     catDescription = sqla.Column(sqla.String(150), nullable=True)
 
     def __repr__(self):
-        return "Category {}".format(self.text)
+        return "Category {}".format(self.catName)
 
 
 class Product(db.Model):
@@ -36,9 +30,11 @@ class Product(db.Model):
     id = sqla.Column(sqla.Integer, primary_key=True)
     productName = sqla.Column(sqla.String(100), nullable=False)
     categoryID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_category.id'), index=True)
+    date_added = sqla.Column(sqla.DateTime, default=datetime.utcnow)
+    updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    productCategory = sqla_orm.relationship("Category", secondary=productCategories, backref='netp_product')
+    productCategory = sqla_orm.relationship("Category", backref='netp_product')
     applicationProduct = sqla_orm.relationship("MemberApplication", back_populates='majorProduct', lazy='noload')
 
     def __repr__(self):
-        return "Product {}".format(self.text)
+        return "Product {}".format(self.productName)

@@ -2,4 +2,4 @@ venv
 *.pyc
 configs/config.py
 .env
-api/app.py
+api/__pycache__/

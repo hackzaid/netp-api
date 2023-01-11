@@ -1,6 +1,9 @@
+from functools import wraps
+
 from flask import current_app
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
-from werkzeug.exceptions import Unauthorized, Forbidden
+from werkzeug.exceptions import Unauthorized, Forbidden, abort
+from flask_login import current_user
 
 from api.app import db
 from api.models.administration.adminModels import User
@@ -22,8 +25,6 @@ def verify_password(username, password):
 @token_auth.get_user_roles
 def get_user_roles(user):
     return user.get_roles()
-
-
 
 
 @basic_auth.error_handler
@@ -54,3 +55,18 @@ def token_auth_error(status=401):
                'message': error.name,
                'description': error.description,
            }, error.code
+
+
+def group_required(group):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            user = token_auth.current_user()
+
+            if not user.get_groups(group):
+                abort(403)
+            return f(*args, **kwargs)
+
+        return decorated_function
+
+    return decorator

@@ -1,3 +1,4 @@
+import os
 import sentry_sdk
 from flask import Flask, redirect, url_for, request, g
 from alchemical.flask import Alchemical
@@ -10,12 +11,6 @@ from apifairy import APIFairy
 from configs.config import BaseConfig, ProdConfig
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_authorize import Authorize
-from flask_login import current_user
-
-
-def my_current_user(user):
-    return g.user
-
 
 db = Alchemical()
 migrate = Migrate()
@@ -24,10 +19,20 @@ cors = CORS()
 mail = Mail()
 apifairy = APIFairy()
 
-authorize = Authorize(current_user=my_current_user)
+
+def get_current_user():
+    return g.flask_httpauth_user
 
 
-def create_app(config_class=ProdConfig):
+authorize = Authorize(current_user=get_current_user)
+
+if os.environ.get('FLASK_ENV') == 'production':
+    app_config = ProdConfig
+else:
+    app_config = BaseConfig
+
+
+def create_app(config_class=app_config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     # extensions
