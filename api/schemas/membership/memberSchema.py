@@ -39,6 +39,7 @@ class MembershipTypeSchema(ma.SQLAlchemySchema):
 class MembershipSubCategorySchema(ma.SQLAlchemySchema):
     class Meta:
         model = MemberSubCategory
+        ordered = True
 
     id = ma.auto_field(dump_only=True)
     title = ma.String(required=True)

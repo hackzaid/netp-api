@@ -19,8 +19,13 @@ class Updateable:
             setattr(self, attr, value)
 
 
-class Members(db.Model, Updateable):
+class Members(db.Model, Updateable, PermissionsMixin):
     __tablename__ = 'netp_members'
+    __permissions__ = dict(
+        owner=['read', 'update', 'delete', 'revoke'],  # owners can revoke
+        group=['read', 'update', 'revoke'],  # group can revoke
+        other=['read']
+    )
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     regNo = sqla.Column(sqla.BigInteger, unique=True, nullable=False)
@@ -55,7 +60,7 @@ class MemberType(db.Model):
         'MemberApplication', back_populates='membershipType', lazy='noload')
 
     def __repr__(self):
-        return '<MemberType {}>'.format(self.text)
+        return '<MemberType {}>'.format(self.title)
 
 
 class MemberSubCategory(db.Model):
