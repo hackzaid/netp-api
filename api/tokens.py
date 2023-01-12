@@ -84,6 +84,7 @@ def refresh(args):
 def revoke():
     """Revoke an access token"""
     access_token = request.headers['Authorization'].split()[1]
+    print(request.headers.get('Authorization'))
     token = db.session.scalar(Token.select().filter_by(
         access_token=access_token))
     if not token:  # pragma: no cover
