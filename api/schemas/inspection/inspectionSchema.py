@@ -65,6 +65,8 @@ class InspectionSchema(ma.SQLAlchemySchema):
         ordered = True
 
     id = ma.auto_field(dump_only=True)
+    inspection_form_id = ma.Integer(required=True)
+    member_id = ma.Integer(required=True)
     created_on = ma.auto_field(dump_only=True)
     updated_on = ma.auto_field(dump_only=True)
     inspection_inspectors = ma.Nested(

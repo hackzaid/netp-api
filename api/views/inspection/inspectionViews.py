@@ -49,11 +49,22 @@ def all_forms():
     return InspectionForm.select()
 
 
+@inspection.route('/inspection', methods=['POST'])
+@body(inspection_schema)
+@response(inspection_schema)
+def new_inspection(data):
+    """New Inspection"""
+    newInspection = Inspection(**data)
+    db.session.add(newInspection)
+    db.session.commit()
+    return newInspection
+
+
 @inspection.route('/inspection/forms', methods=['POST'])
 @body(inspection_form_schema)
 @response(inspection_form_schema)
 def new_inspection_form(data):
-    """New Inspection"""
+    """New Inspection Form"""
     newInspectionForm = InspectionForm(**data)
     db.session.add(newInspectionForm)
     db.session.commit()
