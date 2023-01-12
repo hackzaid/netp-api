@@ -27,6 +27,11 @@ def get_user_roles(user):
     return user.get_roles()
 
 
+@basic_auth.get_user_roles
+def get_user_roles(user):
+    return user.get_roles()
+
+
 @basic_auth.error_handler
 def basic_auth_error(status=401):
     error = (Forbidden if status == 403 else Unauthorized)()

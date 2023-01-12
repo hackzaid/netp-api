@@ -31,12 +31,13 @@ class MembershipTypeSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field(dump_only=True)
     title = ma.String(required=True)
-    subCategory = ma.Nested('MembershipSubCategorySchema', many=True, dump_only=True)
+    subCategory = ma.Nested('MembershipSubCategorySchema', many=True, dump_only=True, exclude=['typeID'])
 
 
 class MembershipSubCategorySchema(ma.SQLAlchemySchema):
     class Meta:
         model = MemberSubCategory
+        ordered = True
 
     id = ma.auto_field(dump_only=True)
     title = ma.String(required=True)
