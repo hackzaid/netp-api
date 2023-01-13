@@ -1,7 +1,6 @@
 from apifairy.decorators import other_responses
 from flask import Blueprint, abort, g
 from apifairy import authenticate, body, response
-from flask_login import current_user
 
 from api import db
 from api.app import authorize
@@ -26,8 +25,6 @@ categories_schema = CategorySchema(many=True)
 @paginated_response(product_schema)
 def get_products():
     """Get All Products"""
-    user = token_auth.current_user()
-    print(g.flask_httpauth_user)
     return Product.select()
 
 
