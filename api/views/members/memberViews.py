@@ -25,7 +25,6 @@ membership_sub_cat_Schema = MembershipSubCategorySchema()
 @paginated_response(member_schema)
 def get_all_members():
     """Retrieve All Members"""
-    print(request.environ.get('HTTP_AUTHORIZATION'))
     return Members.select()
 
 
@@ -58,6 +57,7 @@ def add_member(args):
 
 @members.route('membershiptype/all/', methods=['GET'])
 @authenticate(token_auth)
+@authorize.read
 @paginated_response(membership_type_schema)
 def get_all_membershiptype():
     """Retrieve Membership Types"""
@@ -66,6 +66,7 @@ def get_all_membershiptype():
 
 @members.route('membership/subcategory/all/', methods=['GET'])
 @authenticate(token_auth)
+@authorize.read
 @paginated_response(membership_sub_cat_Schema)
 def get_all_member_sub_cat():
     """Retrieve Membership Sub Categories"""

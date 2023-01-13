@@ -62,16 +62,4 @@ def token_auth_error(status=401):
            }, error.code
 
 
-def group_required(group):
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            user = token_auth.current_user()
 
-            if not user.get_groups(group):
-                abort(403)
-            return f(*args, **kwargs)
-
-        return decorated_function
-
-    return decorator

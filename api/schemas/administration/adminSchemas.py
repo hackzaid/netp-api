@@ -20,8 +20,8 @@ class UserSchema(ma.SQLAlchemySchema):
                          validate=validate.Length(min=3))
     avatar_url = ma.String(dump_only=True)
     about_me = ma.auto_field()
-    first_seen = ma.auto_field(dump_only=True)
-    last_seen = ma.auto_field(dump_only=True)
+    # first_seen = ma.auto_field(dump_only=True)
+    # last_seen = ma.auto_field(dump_only=True)
     roles = ma.Nested('RoleSchema', many=True, dump_only=True, exclude=['id'])
 
     # posts_url = ma.URLFor('posts.user_all', values={'id': '<id>'},
@@ -45,11 +45,11 @@ class UserSchema(ma.SQLAlchemySchema):
                 db.session.scalar(User.select().filter_by(email=value)):
             raise ValidationError('Use a different email.')
 
-    @post_dump
-    def fix_datetimes(self, data, **kwargs):
-        data['first_seen'] += 'Z'
-        data['last_seen'] += 'Z'
-        return data
+    # @post_dump
+    # def fix_datetimes(self, data, **kwargs):
+    #     data['first_seen'] += 'Z'
+    #     data['last_seen'] += 'Z'
+    #     return data
 
 
 class UpdateUserSchema(UserSchema):

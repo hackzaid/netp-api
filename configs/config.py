@@ -31,8 +31,11 @@ class BaseConfig(object):
         'REFRESH_TOKEN_IN_COOKIE') or 'yes')
     REFRESH_TOKEN_IN_BODY = as_bool(os.environ.get('REFRESH_TOKEN_IN_BODY'))
     RESET_TOKEN_MINUTES = int(os.environ.get('RESET_TOKEN_MINUTES') or '15')
+    CONFIRM_EMAIL_TOKEN = int(os.environ.get('RESET_TOKEN_MINUTES') or '15')
     PASSWORD_RESET_URL = os.environ.get('PASSWORD_RESET_URL') or \
-                         'http://localhost:3000/reset'
+                         'http://localhost:5000/api/reset/'
+    ACCOUNT_CONFIRMATION_URL = os.environ.get('ACCOUNT_CONFIRMATION_URL') or \
+                         'http://localhost:5000/api/confirm/'
     USE_CORS = as_bool(os.environ.get('USE_CORS') or 'yes')
     CORS_SUPPORTS_CREDENTIALS = True
     JSON_SORT_KEYS = False
@@ -49,7 +52,7 @@ class BaseConfig(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER',
-                                         'donotreply@microblog.example.com')
+                                         'no-reply@eminpasha.com')
 
 
 class ProdConfig(BaseConfig):

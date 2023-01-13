@@ -36,8 +36,7 @@ class Members(db.Model, Updateable, PermissionsMixin):
     region = sqla.Column(sqla.String(100), nullable=False)
     membershipTypeID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_membertype.id'))
     membershipSubCatID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_membershipsubcat.id'))
-    date_joined = sqla.Column(sqla.DateTime, default=datetime.utcnow)
-    updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 
     contactPersons = sqla_orm.relationship('ContactPersons', back_populates='memberContact')
     membershipType = sqla_orm.relationship('MemberType', back_populates='typeMember')

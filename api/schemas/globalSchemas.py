@@ -55,3 +55,8 @@ def PaginatedCollection(schema, pagination_schema=StringPaginationSchema):
     PaginatedSchema.__name__ = 'Paginated{}'.format(schema.__class__.__name__)
     paginated_schema_cache[schema] = PaginatedSchema
     return PaginatedSchema
+
+
+class MessageSchema(ma.Schema):
+    code = ma.Integer()
+    message = ma.String()

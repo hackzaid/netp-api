@@ -81,6 +81,11 @@ class User(Updateable, db.Model):
     about_me = sqla.Column(sqla.String(140))
     first_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     last_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
+    is_member = sqla.Column(sqla.Boolean, default=True, nullable=False)
+    created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
+    updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    confirmed = sqla.Column(sqla.Boolean, nullable=False, default=False)
+    confirmed_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
 
     roles = sqla_orm.relationship('Role', secondary=UserRole)
     groups = sqla_orm.relationship('Group', secondary=UserGroup)
@@ -177,6 +182,26 @@ class User(Updateable, db.Model):
             current_app.config['SECRET_KEY'],
             algorithm='HS256'
         )
+
+    def generate_confirmation_token(self):
+        serializer = jwt.encode(
+            {
+                'exp': time() + current_app.config['CONFIRM_EMAIL_TOKEN'] * 60,
+                'confirm_email': self.email,
+            },
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256'
+        )
+        return serializer
+
+    @staticmethod
+    def confirm_token(confirmation_token):
+        try:
+            email = jwt.decode(confirmation_token, current_app.config['SECRET_KEY'],
+                              algorithms=['HS256'])
+        except jwt.PyJWTError:
+            return
+        return email
 
     @staticmethod
     def verify_reset_token(reset_token):
