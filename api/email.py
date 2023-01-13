@@ -9,7 +9,6 @@ from api.app import mail
 def send_async_email(app, to, subject, template, **kwargs):
     with app.app_context():  # pragma: no cover
         msg = Message(subject, recipients=[to])
-        msg.body = render_template(template + '.txt', **kwargs)
         msg.html = render_template(template + '.html', **kwargs)
         mail.send(msg)
 

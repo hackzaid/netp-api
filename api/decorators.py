@@ -1,10 +1,11 @@
 from functools import wraps
-from flask import abort
+from flask import abort, url_for, g
 from apifairy import arguments, response
 import sqlalchemy as sqla
 from api.app import db
 
 from api.schemas.globalSchemas import StringPaginationSchema, PaginatedCollection
+from api.auth import token_auth
 
 
 def paginated_response(schema, max_limit=25, order_by=None,
@@ -64,3 +65,11 @@ def paginated_response(schema, max_limit=25, order_by=None,
     return inner
 
 
+def check_confirmed(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if token_auth.current_user().confirmed is False:
+            return {"message": "Please confirm your account"}
+        return func(*args, **kwargs)
+
+    return decorated_function
