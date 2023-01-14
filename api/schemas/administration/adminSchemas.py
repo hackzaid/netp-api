@@ -80,6 +80,7 @@ class RoleSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field(dump_only=True)
     name = ma.String(required=True)
+    restrictions = ma.List(ma.String(required=True))
 
 
 class AssignRoleSchema(ma.Schema):

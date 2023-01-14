@@ -149,8 +149,8 @@ class User(Updateable, db.Model):
         role = [r.name for r in self.roles]
         return role
 
-    def get_groups(self):
-        group = [r.name for r in self.groups]
+    def get_restrictions(self):
+        group = [r.restrictions for r in self.roles]
         return group
 
     @staticmethod

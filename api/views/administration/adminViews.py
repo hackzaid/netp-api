@@ -162,7 +162,16 @@ def put(data):
 @body(role_schema)
 @response(role_schema)
 def role_add(args):
-    """Add User Roles"""
+    """Add User Roles
+
+    With content restrictions, users in associated roles or groups will be unauthorized to perform specific actions.
+    To configure your roles or groups to enable restrictions, you can use the following example;
+
+    ```
+     name = "admin"
+     restrictions=['create', 'update', 'delete']
+     ```
+    """
     role = Role(**args)
     role.restrictions = dict(
         netp_product=['create', 'update', 'delete']
