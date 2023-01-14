@@ -21,7 +21,7 @@ categories_schema = CategorySchema(many=True)
 @product.route('/products/all', methods=['GET'])
 @authenticate(token_auth)
 @check_confirmed
-@authorize.has_role('moderator', 'admin')
+@authorize.read
 @paginated_response(product_schema)
 def get_products():
     """Get All Products"""
@@ -31,7 +31,7 @@ def get_products():
 @product.route('/category/all', methods=['GET'])
 @authenticate(token_auth)
 @check_confirmed
-@authorize.has_role('admin')
+@authorize.read
 @paginated_response(category_schema)
 def get_categories():
     """Get All Categories"""
@@ -60,7 +60,6 @@ def add_category(args):
 @response(product_schema)
 def add_product(args):
     """ Add Product"""
-
     products = Product(**args)
     db.session.add(products)
     db.session.commit()

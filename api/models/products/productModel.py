@@ -33,8 +33,13 @@ class Category(db.Model):
         return "Category {}".format(self.catName)
 
 
-class Product(db.Model):
+class Product(db.Model, PermissionsMixin):
     __tablename__ = 'netp_product'
+    __permissions__ = dict(
+        owner=['read', 'update', 'delete'],
+        group=['read', 'update'],
+        other=['read']
+    )
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     productName = sqla.Column(sqla.String(100), nullable=False)
