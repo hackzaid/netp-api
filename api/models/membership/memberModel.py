@@ -19,18 +19,11 @@ class Updateable:
             setattr(self, attr, value)
 
 
-class Members(db.Model, Updateable, PermissionsMixin):
-    __tablename__ = 'netp_members'
-    __permissions__ = dict(
-        owner=['read', 'update', 'delete', 'revoke'],  # owners can revoke
-        group=['read', 'update', 'revoke'],  # group can revoke
-        other=['read']
-    )
+class MemberDetails(db.Model, Updateable):
+    __tablename__ = 'netp_member_details'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     regNo = sqla.Column(sqla.BigInteger, unique=True, nullable=False)
-    firstName = sqla.Column(sqla.String(100), nullable=False)
-    lastName = sqla.Column(sqla.String(100), nullable=False)
     village = sqla.Column(sqla.String(100), nullable=False)
     region = sqla.Column(sqla.String(100), nullable=False)
     membershipID = sqla.Column(
@@ -43,7 +36,7 @@ class Members(db.Model, Updateable, PermissionsMixin):
         'ContactPersons', back_populates='memberContact')
 
     def __repr__(self):
-        return '<Members {}>'.format(self.text)
+        return '<MembersDetails {}>'.format(self.text)
 
 
 class MemberType(db.Model):

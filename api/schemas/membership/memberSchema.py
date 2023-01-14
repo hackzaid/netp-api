@@ -7,7 +7,7 @@ from api.models.membership.memberModel import *
 
 class MemberSchema(ma.SQLAlchemySchema):
     class Meta:
-        model = Members
+        model = MemberDetails
         ordered = True
         include_fk = True
 

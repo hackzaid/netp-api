@@ -73,6 +73,8 @@ class User(Updateable, db.Model):
     __tablename__ = 'users'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
+    firstName = sqla.Column(sqla.String(100), nullable=False)
+    lastName = sqla.Column(sqla.String(100), nullable=False)
     username = sqla.Column(sqla.String(64), index=True, unique=True,
                            nullable=False)
     email = sqla.Column(sqla.String(120), index=True, unique=True,
@@ -91,6 +93,10 @@ class User(Updateable, db.Model):
     groups = sqla_orm.relationship('Group', secondary=UserGroup)
     tokens = sqla_orm.relationship('Token', back_populates='user',
                                    lazy='noload')
+
+    memberInfo = sqla_orm.relationship('MemberDetails', back_populates='userDetails')
+    memberApplication = sqla_orm.relationship("MemberApplication", back_populates='member', lazy='noload')
+    contactPersons = sqla_orm.relationship('ContactPersons', back_populates='memberContact', lazy='noload')
 
     # def posts_select(self):
     #     return Post.select().where(sqla_orm.with_parent(self, User.posts))

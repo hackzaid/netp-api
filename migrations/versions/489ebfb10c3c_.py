@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: b7e22ca86fe8
+Revision ID: 489ebfb10c3c
 Revises: 
-Create Date: 2023-01-09 10:47:28.555565
+Create Date: 2023-01-14 12:52:07.666718
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import flask_authorize
 
 
 # revision identifiers, used by Alembic.
-revision = 'b7e22ca86fe8'
+revision = '489ebfb10c3c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,22 +41,43 @@ def upgrade():
     op.create_table('ntep_roles',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
-    sa.Column('allowances', flask_authorize.mixins.JSON(), nullable=True),
+    sa.Column('restrictions', flask_authorize.mixins.JSON(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('firstName', sa.String(length=100), nullable=False),
+    sa.Column('lastName', sa.String(length=100), nullable=False),
     sa.Column('username', sa.String(length=64), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('password_hash', sa.String(length=128), nullable=True),
     sa.Column('about_me', sa.String(length=140), nullable=True),
     sa.Column('first_seen', sa.DateTime(), nullable=True),
     sa.Column('last_seen', sa.DateTime(), nullable=True),
+    sa.Column('is_member', sa.Boolean(), nullable=False),
+    sa.Column('created_on', sa.DateTime(), nullable=True),
+    sa.Column('updated_on', sa.DateTime(), nullable=True),
+    sa.Column('confirmed', sa.Boolean(), nullable=False),
+    sa.Column('confirmed_on', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
+    op.create_table('netp_contactpersons',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('c_firstName', sa.String(length=100), nullable=False),
+    sa.Column('c_lastName', sa.String(length=100), nullable=False),
+    sa.Column('c_position', sa.String(length=100), nullable=False),
+    sa.Column('c_phone', sa.String(length=100), nullable=False),
+    sa.Column('c_workphone', sa.String(length=100), nullable=False),
+    sa.Column('c_email', sa.String(length=100), nullable=True),
+    sa.Column('c_memberID', sa.Integer(), nullable=True),
+    sa.Column('created_on', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['c_memberID'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_netp_contactpersons_c_memberID'), 'netp_contactpersons', ['c_memberID'], unique=False)
     op.create_table('netp_membershipsubcat',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=True),
@@ -69,6 +90,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('productName', sa.String(length=100), nullable=False),
     sa.Column('categoryID', sa.Integer(), nullable=True),
+    sa.Column('date_added', sa.DateTime(), nullable=True),
+    sa.Column('updated_on', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['categoryID'], ['netp_category.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -98,28 +121,6 @@ def upgrade():
     op.create_index(op.f('ix_tokens_access_token'), 'tokens', ['access_token'], unique=False)
     op.create_index(op.f('ix_tokens_refresh_token'), 'tokens', ['refresh_token'], unique=False)
     op.create_index(op.f('ix_tokens_user_id'), 'tokens', ['user_id'], unique=False)
-    op.create_table('netp_members',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('regNo', sa.BigInteger(), nullable=False),
-    sa.Column('firstName', sa.String(length=100), nullable=False),
-    sa.Column('lastName', sa.String(length=100), nullable=False),
-    sa.Column('village', sa.String(length=100), nullable=False),
-    sa.Column('region', sa.String(length=100), nullable=False),
-    sa.Column('membershipTypeID', sa.Integer(), nullable=True),
-    sa.Column('membershipSubCatID', sa.Integer(), nullable=True),
-    sa.Column('date_joined', sa.DateTime(), nullable=True),
-    sa.Column('updated_on', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['membershipSubCatID'], ['netp_membershipsubcat.id'], ),
-    sa.ForeignKeyConstraint(['membershipTypeID'], ['netp_membertype.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('regNo')
-    )
-    op.create_table('netp_productCategories',
-    sa.Column('product_id', sa.Integer(), nullable=True),
-    sa.Column('netp_category', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['netp_category'], ['netp_category.id'], ),
-    sa.ForeignKeyConstraint(['product_id'], ['netp_product.id'], )
-    )
     op.create_table('netp_application',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('regNo', sa.String(length=255), nullable=True),
@@ -134,7 +135,7 @@ def upgrade():
     sa.Column('applicationStatus', sa.String(length=155), nullable=True),
     sa.Column('created_on', sa.DateTime(), nullable=True),
     sa.Column('updated_on', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['memberID'], ['netp_members.id'], ),
+    sa.ForeignKeyConstraint(['memberID'], ['users.id'], ),
     sa.ForeignKeyConstraint(['productID'], ['netp_product.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('companyProfile'),
@@ -145,32 +146,31 @@ def upgrade():
     )
     op.create_index(op.f('ix_netp_application_memberID'), 'netp_application', ['memberID'], unique=False)
     op.create_index(op.f('ix_netp_application_productID'), 'netp_application', ['productID'], unique=False)
-    op.create_table('netp_contactpersons',
+    op.create_table('netp_member_details',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('c_firstName', sa.String(length=100), nullable=False),
-    sa.Column('c_lastName', sa.String(length=100), nullable=False),
-    sa.Column('c_position', sa.String(length=100), nullable=False),
-    sa.Column('c_phone', sa.String(length=100), nullable=False),
-    sa.Column('c_workphone', sa.String(length=100), nullable=False),
-    sa.Column('c_email', sa.String(length=100), nullable=True),
-    sa.Column('c_memberID', sa.Integer(), nullable=True),
-    sa.Column('created_on', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['c_memberID'], ['netp_members.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('regNo', sa.BigInteger(), nullable=False),
+    sa.Column('village', sa.String(length=100), nullable=False),
+    sa.Column('region', sa.String(length=100), nullable=False),
+    sa.Column('userID', sa.Integer(), nullable=True),
+    sa.Column('membershipTypeID', sa.Integer(), nullable=True),
+    sa.Column('membershipSubCatID', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['membershipSubCatID'], ['netp_membershipsubcat.id'], ),
+    sa.ForeignKeyConstraint(['membershipTypeID'], ['netp_membertype.id'], ),
+    sa.ForeignKeyConstraint(['userID'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('regNo')
     )
-    op.create_index(op.f('ix_netp_contactpersons_c_memberID'), 'netp_contactpersons', ['c_memberID'], unique=False)
+    op.create_index(op.f('ix_netp_member_details_userID'), 'netp_member_details', ['userID'], unique=False)
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_index(op.f('ix_netp_contactpersons_c_memberID'), table_name='netp_contactpersons')
-    op.drop_table('netp_contactpersons')
+    op.drop_index(op.f('ix_netp_member_details_userID'), table_name='netp_member_details')
+    op.drop_table('netp_member_details')
     op.drop_index(op.f('ix_netp_application_productID'), table_name='netp_application')
     op.drop_index(op.f('ix_netp_application_memberID'), table_name='netp_application')
     op.drop_table('netp_application')
-    op.drop_table('netp_productCategories')
-    op.drop_table('netp_members')
     op.drop_index(op.f('ix_tokens_user_id'), table_name='tokens')
     op.drop_index(op.f('ix_tokens_refresh_token'), table_name='tokens')
     op.drop_index(op.f('ix_tokens_access_token'), table_name='tokens')
@@ -180,6 +180,8 @@ def downgrade():
     op.drop_index(op.f('ix_netp_product_categoryID'), table_name='netp_product')
     op.drop_table('netp_product')
     op.drop_table('netp_membershipsubcat')
+    op.drop_index(op.f('ix_netp_contactpersons_c_memberID'), table_name='netp_contactpersons')
+    op.drop_table('netp_contactpersons')
     op.drop_index(op.f('ix_users_username'), table_name='users')
     op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_table('users')

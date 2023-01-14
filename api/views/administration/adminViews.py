@@ -45,7 +45,7 @@ def new(args):
     return {}
 
 
-@users.route('/confirm/<token>', methods=['POST'])
+@users.route('/confirm/<token>', methods=['GET'])
 @response(MessageSchema)
 def confirm_account(token):
     """Activate User Account"""
@@ -66,7 +66,7 @@ def confirm_account(token):
     return {'message': message}
 
 
-@users.route('/confirm/', methods=['GET'])
+@users.route('/resend/', methods=['GET'])
 @authenticate(token_auth)
 @response(MessageSchema)
 def resend_confirmation():
