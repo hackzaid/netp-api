@@ -3,7 +3,7 @@ from flask import Blueprint, abort, request
 from apifairy import authenticate, body, response
 
 from api.app import db, authorize
-from api.models.membership.memberModel import Members, ContactPersons, MemberType, MemberSubCategory
+from api.models.membership.memberModel import MemberDetails, ContactPersons, MemberType, MemberSubCategory
 from api.schemas.membership.memberSchema import MemberSchema, ContactPersonSchema, MembershipTypeSchema, \
     MembershipSubCategorySchema
 from api.auth import token_auth, basic_auth
@@ -25,7 +25,7 @@ membership_sub_cat_Schema = MembershipSubCategorySchema()
 @paginated_response(member_schema)
 def get_all_members():
     """Retrieve All Members"""
-    return Members.select()
+    return MemberDetails.select()
 
 
 @members.route('/member/type', methods=['POST'])
@@ -43,12 +43,12 @@ def membership_type_add(args):
 
 @members.route('member/add', methods=['POST'])
 @authenticate(token_auth)
-@authorize.create(Members)
+@authorize.create(MemberDetails)
 @response(member_schema)
 @body(member_schema)
 def add_member(args):
     """Member Onboarding"""
-    member = Members(**args)
+    member = MemberDetails(**args)
     member.regNo = 299930
     db.session.add(member)
     db.session.commit()
