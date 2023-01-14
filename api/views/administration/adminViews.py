@@ -87,7 +87,8 @@ def resend_confirmation():
 @paginated_response(users_schema)
 def all():
     """Retrieve all users"""
-    return User.select()
+    adminUsers = db.session.query(User).filter(User.is_member == 0)
+    return adminUsers
 
 
 @users.route('/user/manage/role/', methods=['POST'])

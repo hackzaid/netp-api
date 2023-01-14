@@ -12,10 +12,13 @@ class UserSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field(dump_only=True)
     url = ma.String(dump_only=True)
+
     username = ma.auto_field(required=True,
                              validate=validate.Length(min=3, max=64))
     email = ma.auto_field(required=True, validate=[validate.Length(max=120),
                                                    validate.Email()])
+    firstName = ma.String(required=True)
+    lastName = ma.String(required=True)
     password = ma.String(required=True, load_only=True,
                          validate=validate.Length(min=3))
     avatar_url = ma.String(dump_only=True)

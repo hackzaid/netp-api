@@ -4,6 +4,7 @@ from apifairy import authenticate, body, response
 
 from api.app import db, authorize
 from api.models.membership.memberModel import MemberDetails, ContactPersons, MemberType, MemberSubCategory
+from api.models.administration.adminModels import User
 from api.schemas.membership.memberSchema import MemberSchema, ContactPersonSchema, MembershipTypeSchema, \
     MembershipSubCategorySchema
 from api.auth import token_auth, basic_auth
@@ -19,13 +20,13 @@ membership_types_schema = MembershipTypeSchema(many=True)
 membership_sub_cat_Schema = MembershipSubCategorySchema()
 
 
-
 @members.route('members/all/', methods=['GET'])
 @authenticate(token_auth, role=['admin'])
 @paginated_response(member_schema)
 def get_all_members():
     """Retrieve All Members"""
-    return MemberDetails.select()
+    getMembers = db.session.query(User).filter(User.is_member == 1)
+    return getMembers
 
 
 @members.route('/member/type', methods=['POST'])
