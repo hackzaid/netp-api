@@ -8,7 +8,11 @@ Create Date: 2023-01-09 09:32:58.104078
 Revision ID: 489ebfb10c3c
 Revises: 
 Create Date: 2023-01-14 12:52:07.666718
+<<<<<<< HEAD
 >>>>>>>> dd5cb5b (User and Member Merge V1.1):migrations/versions/489ebfb10c3c_.py
+=======
+>>>>>>>> 8daf29f (User and Member Merge V1.1):migrations/versions/489ebfb10c3c_.py
+>>>>>>> 9c8547a (User and Member Merge V1.1)
 
 """
 from alembic import op
@@ -23,7 +27,11 @@ down_revision = 'bfc1f43fd05f'
 ========
 revision = '489ebfb10c3c'
 down_revision = None
+<<<<<<< HEAD
 >>>>>>>> dd5cb5b (User and Member Merge V1.1):migrations/versions/489ebfb10c3c_.py
+=======
+>>>>>>>> 8daf29f (User and Member Merge V1.1):migrations/versions/489ebfb10c3c_.py
+>>>>>>> 9c8547a (User and Member Merge V1.1)
 branch_labels = None
 depends_on = None
 
