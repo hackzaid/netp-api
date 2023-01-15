@@ -35,9 +35,9 @@ answers_schema = AnswerSchema(many=True)
 @paginated_response(inspection_schema, order_by=Inspection.created_on,
                     order_direction='desc',
                     pagination_schema=DateTimePaginationSchema)
-def all(member_id):
-    """Get All Inspections For A Member"""
-    return Inspection.query.filter(Inspection.member_id == member_id).all()
+def all_inspections(member_id):
+    """All Inspections For A Member"""
+    return db.session.query(InspectionFormSection).filter(Inspection.member_id == member_id)
 
 
 @inspection.route('/inspection/forms')
@@ -45,8 +45,17 @@ def all(member_id):
                     order_direction='desc',
                     pagination_schema=DateTimePaginationSchema)
 def all_forms():
-    """Get All Inspection Form"""
+    """All Inspection Form"""
     return InspectionForm.select()
+
+
+@inspection.route('/inspection/forms/sections/<int:form_id>')
+@paginated_response(inspection_form_sections_schema, order_by=InspectionFormSection.section_no,
+                    order_direction='asc',
+                    pagination_schema=DateTimePaginationSchema)
+def all_form_sections(form_id):
+    """All Inspection Form sections"""
+    return db.session.query(InspectionFormSection).filter(InspectionFormSection.inspection_form_id == form_id)
 
 
 @inspection.route('/inspection', methods=['POST'])
@@ -94,22 +103,28 @@ def new_inspector(data):
 
 
 @inspection.route('/inspection/forms/question', methods=['POST'])
-@body(question_schema)
-@response(question_schema)
+@body(questions_schema)
+@response(questions_schema)
 def new_question(data):
     """New Question"""
-    newQuestion = Question(**data)
-    db.session.add(newQuestion)
+    newQuestions = []
+    for question in data:
+        newQuestions.append(Question(**question))
+
+    db.session.add_all(newQuestions)
     db.session.commit()
-    return newQuestion
+    return newQuestions
 
 
 @inspection.route('/inspection/answers', methods=['POST'])
-@body(answer_schema)
-@response(answer_schema)
+@body(answers_schema)
+@response(answers_schema)
 def new_answer(data):
     """New Answer"""
-    newAnswers = Answer(**data)
-    db.session.add(newAnswers)
+    newAnswers = []
+    for answer in data:
+        newAnswers.append(Answer(**answer))
+
+    db.session.add_all(newAnswers)
     db.session.commit()
     return newAnswers

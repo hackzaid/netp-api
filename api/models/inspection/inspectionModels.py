@@ -51,8 +51,8 @@ class Question(Updateable, db.Model):
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(500), nullable=False)
-    inspection_form_sections_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_inspection_form_sections.id'),
-                                              index=True)
+    inspection_form_section_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_inspection_form_sections.id'),
+                                             index=True)
 
     inspection_form_section = sqla_orm.relationship(
         'InspectionFormSection', back_populates='questions')

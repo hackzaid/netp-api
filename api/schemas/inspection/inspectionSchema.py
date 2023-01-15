@@ -1,7 +1,24 @@
 from marshmallow import validate
 from api import ma, db
 from api.auth import token_auth
-from api.models.inspection.inspectionModels import InspectionForm, InspectionFormSection, Question, Inspector, Inspection, Answer
+from api.models.inspection.inspectionModels import InspectionForm, InspectionFormSection, Question, Inspector, \
+    Inspection, Answer
+
+
+class InspectionFormSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = InspectionForm
+        ordered = True
+
+    id = ma.auto_field(dump_only=True)
+    name = ma.String(
+        required=True, validate=validate.Length(min=3, max=100))
+    additional_details = ma.String(
+        required=True, validate=validate.Length(min=3, max=1000))
+    created_on = ma.auto_field(dump_only=True)
+    updated_on = ma.auto_field(dump_only=True)
+    inspection_form_sections = ma.Nested(
+        'InspectionFormSectionSchema', many=True, dump_only=True)
 
 
 class InspectionFormSectionSchema(ma.SQLAlchemySchema):
@@ -18,22 +35,6 @@ class InspectionFormSectionSchema(ma.SQLAlchemySchema):
         'QuestionSchema', many=True, dump_only=True)
 
 
-class InspectionFormSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = InspectionForm
-        ordered = True
-
-    id = ma.auto_field(dump_only=True)
-    name = ma.String(
-        required=True, validate=validate.Length(min=3, max=100))
-    additional_details = ma.String(
-        required=True, validate=validate.Length(min=3, max=1000))
-    created_on = ma.auto_field(dump_only=True)
-    updated_on = ma.auto_field(dump_only=True)
-    form_sections = ma.Nested(
-        'InspectionFormSectionSchema', many=True, dump_only=True)
-
-
 class QuestionSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Question
@@ -42,7 +43,7 @@ class QuestionSchema(ma.SQLAlchemySchema):
     id = ma.auto_field(dump_only=True)
     name = ma.String(
         required=True, validate=validate.Length(min=3, max=500))
-    inspection_form_sections_id = ma.Integer(required=True)
+    inspection_form_section_id = ma.Integer(required=True)
 
 
 class InspectorSchema(ma.SQLAlchemySchema):
