@@ -30,7 +30,7 @@ assign_role_schema = AssignRoleSchema()
 
 @users.route('/users', methods=['POST'])
 @body(user_schema)
-@response(user_schema, status_code=204,
+@response(EmptySchema, status_code=204,
           description='A confirmation email has been sent to your email')
 def new(args):
     """Register a new user"""
