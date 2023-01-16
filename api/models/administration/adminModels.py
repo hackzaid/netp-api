@@ -12,6 +12,7 @@ from flask_authorize import RestrictionsMixin, AllowancesMixin, PermissionsMixin
 
 from api.app import db
 
+
 UserGroup = sqla.Table(
     'ntep_user_group',
     db.Model.metadata,
@@ -94,12 +95,14 @@ class User(Updateable, db.Model):
     tokens = sqla_orm.relationship('Token', back_populates='user',
                                    lazy='noload')
 
+    product = sqla_orm.relationship("Product", primaryjoin="or_(User.id == Product.owner_id, User.id == "
+                                                           "Product.added_by)")
     memberInfo = sqla_orm.relationship('MemberDetails', back_populates='userDetails')
     memberApplication = sqla_orm.relationship("MemberApplication", back_populates='member', lazy='noload')
     contactPersons = sqla_orm.relationship('ContactPersons', back_populates='memberContact', lazy='noload')
 
-    # def posts_select(self):
-    #     return Post.select().where(sqla_orm.with_parent(self, User.posts))
+    def user_applications_select(self):
+        return "MemberApplication".select().where(sqla_orm.with_parent(self, User.memberApplication))
     #
     # def following_select(self):
     #     return User.select().where(sqla_orm.with_parent(self, User.following))
