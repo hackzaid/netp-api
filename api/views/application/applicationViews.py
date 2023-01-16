@@ -12,7 +12,6 @@ from api.schemas.application.applicationSchemas import *
 from api.auth import token_auth
 from api.decorators import paginated_response
 from api.schemas.globalSchemas import DateTimePaginationSchema
-from configs.helpers.image_helper import _image_resize
 
 application = Blueprint('application', __name__)
 application_schema = ApplicationSchema()
@@ -70,11 +69,8 @@ def new_application(data):
     return newApplication
 
 
-<<<<<<< HEAD
 @application.route('/member/applications', methods=['GET'])
-=======
 @application.route('/users/<int:id>/applicationss', methods=['GET'])
->>>>>>> 31917cf3337f7a90d46f920c9009c49798ffb428
 @authenticate(token_auth)
 @paginated_response(application_schema, order_by=MemberApplication.created_on,
                     order_direction='desc',

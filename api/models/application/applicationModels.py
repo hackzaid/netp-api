@@ -32,7 +32,6 @@ class MemberApplication(db.Model, Updateable):
     updated_on = sqla.Column(
         sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-<<<<<<< HEAD
     applicationAttachments = sqla_orm.relationship("ApplicationFiles", back_populates='application')
     member = sqla_orm.relationship("User", back_populates='memberApplication', lazy='noload')
     majorProduct = sqla_orm.relationship("Product", back_populates='applicationProduct', lazy='noload')
@@ -48,14 +47,7 @@ class ApplicationFiles(db.Model):
     applicationID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_application.id'), index=True)
 
     application = sqla_orm.relationship("MemberApplication", back_populates='applicationAttachments')
-=======
-    member = sqla_orm.relationship(
-        "User", back_populates='memberApplication', lazy='noload')
-    majorProduct = sqla_orm.relationship(
-        "Product", back_populates='applicationProduct', lazy='noload')
 
     member = sqla_orm.relationship(
         "User", back_populates='memberApplication', lazy='noload')
-    majorProduct = sqla_orm.relationship(
-        "Product", back_populates='applicationProduct', lazy='noload')
->>>>>>> 31917cf3337f7a90d46f920c9009c49798ffb428
+
