@@ -23,7 +23,15 @@ def get_current_user():
     return g.flask_httpauth_user
 
 
-def create_app(config_class=BaseConfig):
+authorize = Authorize(current_user=get_current_user)
+
+if os.environ.get('FLASK_ENV') == 'production':
+    app_config = ProdConfig
+else:
+    app_config = BaseConfig
+
+
+def create_app(config_class=app_config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     # extensions

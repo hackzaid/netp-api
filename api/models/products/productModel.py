@@ -12,15 +12,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from api.app import db
 
-productCategories = sqla.Table(
-    'netp_productCategories',
-    db.Model.metadata,
-    sqla.Column('product_id', sqla.Integer,
-                sqla.ForeignKey('netp_product.id')),
-    sqla.Column('netp_category', sqla.Integer,
-                sqla.ForeignKey('netp_category.id'))
-)
-
 
 class Category(db.Model):
     __tablename__ = 'netp_category'
@@ -45,9 +36,15 @@ class Product(db.Model, PermissionsMixin):
     productName = sqla.Column(sqla.String(100), nullable=False)
     categoryID = sqla.Column(sqla.Integer, sqla.ForeignKey(
         'netp_category.id'), index=True)
+    added_by = sqla.Column(sqla.Integer, sqla.ForeignKey('users.id'))
+    date_added = sqla.Column(sqla.DateTime, default=datetime.utcnow)
+    updated_on = sqla.Column(
+        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    productCategory = sqla_orm.relationship(
-        "Category", secondary=productCategories, backref='netp_product')
+    addedBy = sqla_orm.relationship(
+        "User", back_populates='product', foreign_keys="[Product.added_by]")
+    owner = sqla_orm.relationship("User", foreign_keys="[Product.owner_id]")
+    productCategory = sqla_orm.relationship("Category", backref='netp_product')
     applicationProduct = sqla_orm.relationship(
         "MemberApplication", back_populates='majorProduct', lazy='noload')
 

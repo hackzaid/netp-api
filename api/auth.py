@@ -56,7 +56,17 @@ def verify_token(access_token):
 def token_auth_error(status=401):
     error = (Forbidden if status == 403 else Unauthorized)()
     return {
+<<<<<<< HEAD
         'code': error.code,
         'message': error.name,
         'description': error.description,
     }, error.code
+=======
+               'code': error.code,
+               'message': error.name,
+               'description': error.description,
+           }, error.code
+
+
+
+>>>>>>> main

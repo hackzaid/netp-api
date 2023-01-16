@@ -2,5 +2,5 @@ venv
 *.pyc
 configs/config.py
 .env
-api/app.py
-.idea
+api/__pycache__/
+/frontendmockup

@@ -39,3 +39,8 @@ class MemberApplication(db.Model, Updateable):
         "User", back_populates='memberApplication', lazy='noload')
     majorProduct = sqla_orm.relationship(
         "Product", back_populates='applicationProduct', lazy='noload')
+
+    member = sqla_orm.relationship(
+        "User", back_populates='memberApplication', lazy='noload')
+    majorProduct = sqla_orm.relationship(
+        "Product", back_populates='applicationProduct', lazy='noload')
