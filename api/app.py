@@ -7,7 +7,6 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_mail import Mail
 from apifairy import APIFairy
-
 from configs.config import BaseConfig, ProdConfig
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_authorize import Authorize
@@ -54,7 +53,7 @@ def create_app(config_class=app_config):
 
     from api.views.members.memberViews import members
     from api.views.products.productViews import product
-    from api.views.application.applicationViews import application
+    from api.views.inspection.inspectionViews import inspection
 
     app.register_blueprint(errors)
     app.register_blueprint(tokens, url_prefix='/api')
@@ -62,7 +61,7 @@ def create_app(config_class=app_config):
 
     app.register_blueprint(members, url_prefix='/api')
     app.register_blueprint(product, url_prefix='/api')
-    app.register_blueprint(application, url_prefix='/api')
+    app.register_blueprint(inspection, url_prefix='/api')
 
     # define the shell context
     @app.shell_context_processor

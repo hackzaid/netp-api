@@ -41,7 +41,8 @@ def new(args):
 
     confirm_token = user.generate_confirmation_token()
     confirm_url = current_app.config['ACCOUNT_CONFIRMATION_URL'] + confirm_token
-    send_email(args['email'], 'Activate Account', 'confirm_account', token=confirm_token, url=confirm_url)
+    send_email(args['email'], 'Activate Account',
+               'confirm_account', token=confirm_token, url=confirm_url)
     return {}
 
 
@@ -53,7 +54,8 @@ def confirm_account(token):
     if email is None:
         return {"code": 404,
                 "message": "The confirmation link is invalid or has expired"}
-    user = db.session.scalar(User.select().filter_by(email=email['confirm_email']))
+    user = db.session.scalar(
+        User.select().filter_by(email=email['confirm_email']))
     print(email)
     if user.confirmed:
         message = 'Account already confirmed. Please login'
@@ -76,7 +78,8 @@ def resend_confirmation():
         return {"message": "You're account is already active. Please login"}
     token = user.generate_confirmation_token()
     confirm_url = current_app.config['ACCOUNT_CONFIRMATION_URL'] + token
-    send_email(user.email, 'Activate Account', 'confirm_account', token=token, url=confirm_url)
+    send_email(user.email, 'Activate Account',
+               'confirm_account', token=token, url=confirm_url)
     return {"message": "A new confirmation email has been sent"}
 
 
@@ -127,7 +130,7 @@ def get(id):
 def get_by_username(username):
     """Retrieve a user by username"""
     return db.session.scalar(User.select().filter_by(username=username)) or \
-           abort(404)
+        abort(404)
 
 
 @users.route('/me', methods=['GET'])

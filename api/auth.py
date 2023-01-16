@@ -36,10 +36,10 @@ def get_user_roles(user):
 def basic_auth_error(status=401):
     error = (Forbidden if status == 403 else Unauthorized)()
     return {
-               'code': error.code,
-               'message': error.name,
-               'description': error.description,
-           }, error.code, {'WWW-Authenticate': 'Form'}
+        'code': error.code,
+        'message': error.name,
+        'description': error.description,
+    }, error.code, {'WWW-Authenticate': 'Form'}
 
 
 @token_auth.verify_token
@@ -56,10 +56,7 @@ def verify_token(access_token):
 def token_auth_error(status=401):
     error = (Forbidden if status == 403 else Unauthorized)()
     return {
-               'code': error.code,
-               'message': error.name,
-               'description': error.description,
-           }, error.code
-
-
-
+        'code': error.code,
+        'message': error.name,
+        'description': error.description,
+    }, error.code

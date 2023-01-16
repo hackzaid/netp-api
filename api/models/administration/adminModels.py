@@ -50,10 +50,10 @@ class Token(db.Model):
     def generate(self):
         self.access_token = secrets.token_urlsafe()
         self.access_expiration = datetime.utcnow() + \
-                                 timedelta(minutes=current_app.config['ACCESS_TOKEN_MINUTES'])
+            timedelta(minutes=current_app.config['ACCESS_TOKEN_MINUTES'])
         self.refresh_token = secrets.token_urlsafe()
         self.refresh_expiration = datetime.utcnow() + \
-                                  timedelta(days=current_app.config['REFRESH_TOKEN_DAYS'])
+            timedelta(days=current_app.config['REFRESH_TOKEN_DAYS'])
 
     def expire(self, delay=None):
         if delay is None:  # pragma: no branch
@@ -86,7 +86,8 @@ class User(Updateable, db.Model):
     last_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     is_member = sqla.Column(sqla.Boolean, default=True, nullable=False)
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
-    updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_on = sqla.Column(
+        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     confirmed = sqla.Column(sqla.Boolean, nullable=False, default=False)
     confirmed_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
 
@@ -97,9 +98,12 @@ class User(Updateable, db.Model):
 
     product = sqla_orm.relationship("Product", primaryjoin="or_(User.id == Product.owner_id, User.id == "
                                                            "Product.added_by)")
-    memberInfo = sqla_orm.relationship('MemberDetails', back_populates='userDetails')
-    memberApplication = sqla_orm.relationship("MemberApplication", back_populates='member', lazy='noload')
-    contactPersons = sqla_orm.relationship('ContactPersons', back_populates='memberContact', lazy='noload')
+    memberInfo = sqla_orm.relationship(
+        'MemberDetails', back_populates='userDetails')
+    memberApplication = sqla_orm.relationship(
+        "MemberApplication", back_populates='member', lazy='noload')
+    contactPersons = sqla_orm.relationship(
+        'ContactPersons', back_populates='memberContact', lazy='noload')
 
     def user_applications_select(self):
         return "MemberApplication".select().where(sqla_orm.with_parent(self, User.memberApplication))
@@ -207,7 +211,7 @@ class User(Updateable, db.Model):
     def confirm_token(confirmation_token):
         try:
             email = jwt.decode(confirmation_token, current_app.config['SECRET_KEY'],
-                              algorithms=['HS256'])
+                               algorithms=['HS256'])
         except jwt.PyJWTError:
             return
         return email

@@ -34,15 +34,19 @@ class Product(db.Model, PermissionsMixin):
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     productName = sqla.Column(sqla.String(100), nullable=False)
-    categoryID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_category.id'), index=True)
+    categoryID = sqla.Column(sqla.Integer, sqla.ForeignKey(
+        'netp_category.id'), index=True)
     added_by = sqla.Column(sqla.Integer, sqla.ForeignKey('users.id'))
     date_added = sqla.Column(sqla.DateTime, default=datetime.utcnow)
-    updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_on = sqla.Column(
+        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    addedBy = sqla_orm.relationship("User", back_populates='product', foreign_keys="[Product.added_by]")
+    addedBy = sqla_orm.relationship(
+        "User", back_populates='product', foreign_keys="[Product.added_by]")
     owner = sqla_orm.relationship("User", foreign_keys="[Product.owner_id]")
     productCategory = sqla_orm.relationship("Category", backref='netp_product')
-    applicationProduct = sqla_orm.relationship("MemberApplication", back_populates='majorProduct', lazy='noload')
+    applicationProduct = sqla_orm.relationship(
+        "MemberApplication", back_populates='majorProduct', lazy='noload')
 
     def __repr__(self):
         return "Product {}".format(self.productName)
