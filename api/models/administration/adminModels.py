@@ -86,7 +86,8 @@ class User(Updateable, db.Model):
     last_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     is_member = sqla.Column(sqla.Boolean, default=True, nullable=False)
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
-    updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_on = sqla.Column(
+        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     confirmed = sqla.Column(sqla.Boolean, nullable=False, default=False)
     confirmed_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
 
@@ -95,22 +96,17 @@ class User(Updateable, db.Model):
     tokens = sqla_orm.relationship('Token', back_populates='user',
                                    lazy='noload')
 
-<<<<<<< HEAD
-=======
     product = sqla_orm.relationship("Product", primaryjoin="or_(User.id == Product.owner_id, User.id == "
                                                            "Product.added_by)")
->>>>>>> main
-    memberInfo = sqla_orm.relationship('MemberDetails', back_populates='userDetails')
-    memberApplication = sqla_orm.relationship("MemberApplication", back_populates='member', lazy='noload')
-    contactPersons = sqla_orm.relationship('ContactPersons', back_populates='memberContact', lazy='noload')
+    memberInfo = sqla_orm.relationship(
+        'MemberDetails', back_populates='userDetails')
+    memberApplication = sqla_orm.relationship(
+        "MemberApplication", back_populates='member', lazy='noload')
+    contactPersons = sqla_orm.relationship(
+        'ContactPersons', back_populates='memberContact', lazy='noload')
 
-<<<<<<< HEAD
-    # def posts_select(self):
-    #     return Post.select().where(sqla_orm.with_parent(self, User.posts))
-=======
     def user_applications_select(self):
         return "MemberApplication".select().where(sqla_orm.with_parent(self, User.memberApplication))
->>>>>>> main
     #
     # def following_select(self):
     #     return User.select().where(sqla_orm.with_parent(self, User.following))
@@ -215,7 +211,7 @@ class User(Updateable, db.Model):
     def confirm_token(confirmation_token):
         try:
             email = jwt.decode(confirmation_token, current_app.config['SECRET_KEY'],
-                              algorithms=['HS256'])
+                               algorithms=['HS256'])
         except jwt.PyJWTError:
             return
         return email
