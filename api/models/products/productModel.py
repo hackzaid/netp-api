@@ -43,7 +43,7 @@ class Product(db.Model, PermissionsMixin):
 
     addedBy = sqla_orm.relationship(
         "User", back_populates='product', foreign_keys="[Product.added_by]")
-    owner = sqla_orm.relationship("User", foreign_keys="[Product.owner_id]")
+    owner = sqla_orm.relationship("User", foreign_keys="[Product.owner_id]", overlaps="product")
     productCategory = sqla_orm.relationship("Category", backref='netp_product')
     applicationProduct = sqla_orm.relationship(
         "MemberApplication", back_populates='majorProduct', lazy='noload')
