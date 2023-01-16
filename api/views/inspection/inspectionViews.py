@@ -5,11 +5,11 @@ from apifairy import authenticate, body, response
 from api import db
 from api.models.inspection.inspectionModels import InspectionFormSection, Question, \
     Answer, InspectionForm, Inspector, Inspection
+from api.schemas.globalSchemas import DateTimePaginationSchema
 from api.schemas.inspection.inspectionSchema import InspectionFormSectionSchema, QuestionSchema, \
     AnswerSchema, InspectionFormSchema, InspectorSchema, InspectionSchema
 from api.auth import token_auth
 from api.decorators import paginated_response
-from api.schemas.schemas import DateTimePaginationSchema
 
 inspection = Blueprint('inspection', __name__)
 inspection_schema = InspectionSchema()
