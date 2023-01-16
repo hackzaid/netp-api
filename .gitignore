@@ -3,3 +3,4 @@ venv
 configs/config.py
 .env
 api/__pycache__/
+/frontendmockup

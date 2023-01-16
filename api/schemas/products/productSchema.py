@@ -14,8 +14,9 @@ class ProductSchema(ma.SQLAlchemySchema):
     productName = ma.String(required=True)
     categoryID = ma.Integer(required=True)
     productCategory = ma.Nested('CategorySchema', exclude=['id'], dump_only=True)
+    addedBy = ma.Nested('UserSchema', exclude=['id', 'roles', 'about_me', 'avatar_url', 'username', 'url', 'email'],
+                        dump_only=True)
     date_added = ma.String(dump_only=True)
-    updated_on = ma.String(dump_only=True)
 
 
 class CategorySchema(ma.SQLAlchemySchema):

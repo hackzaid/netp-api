@@ -42,18 +42,18 @@ def membership_type_add(args):
     return membership
 
 
-@members.route('member/add', methods=['POST'])
-@authenticate(token_auth)
-@authorize.create(MemberDetails)
-@response(member_schema)
-@body(member_schema)
-def add_member(args):
-    """Member Onboarding"""
-    member = MemberDetails(**args)
-    member.regNo = 299930
-    db.session.add(member)
-    db.session.commit()
-    return
+# @members.route('member/add', methods=['POST'])
+# @authenticate(token_auth)
+# @authorize.create(MemberDetails)
+# @response(member_schema)
+# @body(member_schema)
+# def add_member(args):
+#     """Member Onboarding"""
+#     member = MemberDetails(**args)
+#     member.regNo = 299930
+#     db.session.add(member)
+#     db.session.commit()
+#     return
 
 
 @members.route('membershiptype/all/', methods=['GET'])
