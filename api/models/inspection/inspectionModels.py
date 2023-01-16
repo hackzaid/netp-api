@@ -96,9 +96,9 @@ class Inspection(Updateable, db.Model):
                                      index=True)
     inspection_form = sqla_orm.relationship('InspectionForm')
 
-    member_id = sqla.Column(sqla.Integer, sqla.ForeignKey(
-        'netp_members.id'), index=True)
-    member = sqla_orm.relationship('Members')
+    user_id = sqla.Column(sqla.Integer, sqla.ForeignKey(
+        'users.id'), index=True)
+    user = sqla_orm.relationship('User')
 
     answers = sqla_orm.relationship(
         'Answer', back_populates='inspection')
