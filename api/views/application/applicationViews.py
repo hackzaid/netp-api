@@ -70,14 +70,13 @@ def new_application(data):
 
 
 @application.route('/member/applications', methods=['GET'])
-@application.route('/users/<int:id>/applicationss', methods=['GET'])
 @authenticate(token_auth)
 @paginated_response(application_schema, order_by=MemberApplication.created_on,
                     order_direction='desc',
                     pagination_schema=DateTimePaginationSchema)
 @other_responses({404: 'User not found'})
 def member_applications_all():
-    """Retrieve all applications from a user"""
+    """Retrieve all applications for member"""
     user_id = token_auth.current_user()
     member = db.session.get(User, user_id) or abort(404)
     return member.user_applications_select()
