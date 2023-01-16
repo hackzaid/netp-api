@@ -48,6 +48,4 @@ class ApplicationFiles(db.Model):
 
     application = sqla_orm.relationship("MemberApplication", back_populates='applicationAttachments')
 
-    member = sqla_orm.relationship(
-        "User", back_populates='memberApplication', lazy='noload')
 
