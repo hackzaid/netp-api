@@ -42,6 +42,7 @@ def new_application(data):
     db.session.commit()
     return newApplication
 
+
 @application.route('/users/<int:id>/applicationss', methods=['GET'])
 @authenticate(token_auth)
 @paginated_response(application_schema, order_by=MemberApplication.created_on,
