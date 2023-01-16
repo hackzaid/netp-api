@@ -1,6 +1,4 @@
 venv
 *.pyc
-configs/config.py
-.env
 api/__pycache__/
 /frontendmockup
