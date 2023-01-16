@@ -24,14 +24,23 @@ class MemberApplication(db.Model, Updateable):
     productID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_product.id'), index=True)
     businessType = sqla.Column(sqla.String(155))
     companyDescription = sqla.Column(sqla.String(155))
-    companyRegCert = sqla.Column(sqla.String(155), unique=True)
-    exportRegCert = sqla.Column(sqla.String(155), unique=True)
-    companyProfile = sqla.Column(sqla.String(155), unique=True)
     exportNo = sqla.Column(sqla.String(155), unique=True)
     applicationStatus = sqla.Column(sqla.String(155))
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    applicationAttachments = sqla_orm.relationship("ApplicationFiles", back_populates='application')
     member = sqla_orm.relationship("User", back_populates='memberApplication', lazy='noload')
     majorProduct = sqla_orm.relationship("Product", back_populates='applicationProduct', lazy='noload')
 
+
+class ApplicationFiles(db.Model):
+    __tablename__ = 'netp_application_files'
+
+    id = sqla.Column(sqla.Integer, primary_key=True)
+    companyRegCert = sqla.Column(sqla.String(155), unique=True)
+    exportRegCert = sqla.Column(sqla.String(155), unique=True)
+    companyProfile = sqla.Column(sqla.String(155), unique=True)
+    applicationID = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_application.id'), index=True)
+
+    application = sqla_orm.relationship("MemberApplication", back_populates='applicationAttachments')
