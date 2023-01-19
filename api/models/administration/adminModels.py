@@ -85,6 +85,7 @@ class User(Updateable, db.Model):
     first_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     last_seen = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     is_member = sqla.Column(sqla.Boolean, default=True, nullable=False)
+    is_active = sqla.Column(sqla.Boolean, default=True, nullable=False)
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(
         sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
