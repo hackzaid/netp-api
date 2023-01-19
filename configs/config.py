@@ -35,16 +35,15 @@ class BaseConfig(object):
     REFRESH_TOKEN_IN_BODY = as_bool(os.environ.get('REFRESH_TOKEN_IN_BODY'))
     RESET_TOKEN_MINUTES = int(os.environ.get('RESET_TOKEN_MINUTES') or '15')
     CONFIRM_EMAIL_TOKEN = int(os.environ.get('RESET_TOKEN_MINUTES') or '15')
-    PASSWORD_RESET_URL = os.environ.get('PASSWORD_RESET_URL') or \
-                         'http://localhost:5000/api/reset/'
-    ACCOUNT_CONFIRMATION_URL = os.environ.get('ACCOUNT_CONFIRMATION_URL') or \
-                               'http://localhost:5000/api/confirm/'
+    BASE_URL = os.environ['BASE_URL']
+    PASSWORD_RESET_URL = BASE_URL + '/reset/'
+    ACCOUNT_CONFIRMATION_URL = BASE_URL + '/confirm/'
     USE_CORS = as_bool(os.environ.get('USE_CORS') or 'yes')
     CORS_SUPPORTS_CREDENTIALS = True
     JSON_SORT_KEYS = False
 
     # API documentation
-    APIFAIRY_TITLE = 'National Export Trade Promotion API'
+    APIFAIRY_TITLE = 'National Trade Facilitation Platform'
     APIFAIRY_VERSION = 'V1.0'
     APIFAIRY_UI = os.environ.get('DOCS_UI', 'elements')
 
