@@ -1,6 +1,6 @@
 import os
 import sentry_sdk
-from flask import Flask, redirect, url_for, request, g
+from flask import Flask, redirect, url_for, request, g, send_from_directory
 from alchemical.flask import Alchemical
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
@@ -64,6 +64,12 @@ def create_app(config_class=app_config):
     app.register_blueprint(product, url_prefix='/api')
     app.register_blueprint(inspection, url_prefix='/api')
     app.register_blueprint(application, url_prefix='/api')
+
+    UPLOAD_FOLDER = '../static/uploads/'
+
+    @app.route('/files/<filename>')
+    def uploaded_file(filename):
+        return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=False)
 
     # define the shell context
     @app.shell_context_processor

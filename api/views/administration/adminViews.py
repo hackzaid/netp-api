@@ -30,8 +30,7 @@ assign_role_schema = AssignRoleSchema()
 
 @users.route('/users', methods=['POST'])
 @body(user_schema)
-@response(EmptySchema, status_code=204,
-          description='A confirmation email has been sent to your email')
+@response(EmptySchema)
 def new(args):
     """Register a new user"""
     user = User(**args)
@@ -43,7 +42,7 @@ def new(args):
     confirm_url = current_app.config['ACCOUNT_CONFIRMATION_URL'] + confirm_token
     send_email(args['email'], 'Activate Account',
                'confirm_account', token=confirm_token, url=confirm_url)
-    return {}
+    return {"message": "A confirmation email has been sent to your email"}
 
 
 @users.route('/confirm/<token>', methods=['GET'])
@@ -94,22 +93,6 @@ def all():
     return adminUsers
 
 
-@users.route('/user/manage/role/', methods=['POST'])
-@authenticate(token_auth)
-@check_confirmed
-@authorize.has_role('admin')
-@body(assign_role_schema)
-@response(role_schema)
-def assign_roles(args):
-    """Assign Role to User"""
-    user = db.session.get(User, 1)
-    role = db.session.get(Role, assign_role_schema.role_id)
-    user.roles.append(role)
-    db.session.add(role)
-    db.session.commit()
-    return {'user': 'firstName {}'.format(user.firstName)}
-
-
 @users.route('/users/<int:id>', methods=['GET'])
 @authenticate(token_auth)
 @check_confirmed
@@ -130,7 +113,7 @@ def get(id):
 def get_by_username(username):
     """Retrieve a user by username"""
     return db.session.scalar(User.select().filter_by(username=username)) or \
-        abort(404)
+           abort(404)
 
 
 @users.route('/me', methods=['GET'])
@@ -158,7 +141,10 @@ def put(data):
     return user
 
 
-@users.route('/user/role', methods=['POST'])
+""" Roles Administration"""
+
+
+@users.route('/roles', methods=['POST'])
 @authenticate(token_auth)
 @check_confirmed
 @authorize.has_role('admin')
@@ -176,9 +162,6 @@ def role_add(args):
      ```
     """
     role = Role(**args)
-    role.restrictions = dict(
-        netp_product=['create', 'update', 'delete']
-    )
     db.session.add(role)
     db.session.commit()
     return role
@@ -192,3 +175,49 @@ def role_add(args):
 def get_roles():
     """Get All Roles"""
     return Role.select()
+
+
+@users.route('/roles/user/manage', methods=['POST'])
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
+@body(assign_role_schema)
+@response(MessageSchema)
+def assign_roles(args):
+    """Assign Role to User
+    Before assigning a user/member a role. Please make sure that they belong to an administrative group and their account(s)
+    has been upgraded to an administrative account.
+
+    By default, accounts are set with a member account type status
+    """
+    user = db.session.get(User, args['user_id']) or abort(404)
+    role = db.session.get(Role, args['role_id']) or abort(404)
+    if user.is_member == 0:
+        user.roles.append(role)
+        db.session.add(role)
+        db.session.commit()
+        message = "User has been assigned role"
+        return {"message": message}
+    else:
+        message = "Please upgrade member to administrative account before assigning a role"
+        return {"message": message}
+
+
+""" Group Administration """
+
+
+@users.route('/groups', methods=['POST'])
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
+@body(group_schema)
+@response(group_schema)
+def role_group(args):
+    """Add Platform Groups
+
+    Groups can include government MDAs intended to use the system for it's sole purpose respectively
+    """
+    group = Group(**args)
+    db.session.add(group)
+    db.session.commit()
+    return group

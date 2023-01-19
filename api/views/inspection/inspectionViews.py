@@ -2,14 +2,14 @@ from apifairy.decorators import other_responses
 from flask import Blueprint, abort
 from apifairy import authenticate, body, response
 
-from api import db
+from api.app import db, authorize
 from api.models.inspection.inspectionModels import InspectionFormSection, Question, \
     Answer, InspectionForm, Inspector, Inspection
 from api.schemas.globalSchemas import DateTimePaginationSchema
 from api.schemas.inspection.inspectionSchema import InspectionFormSectionSchema, QuestionSchema, \
     AnswerSchema, InspectionFormSchema, InspectorSchema, InspectionSchema
 from api.auth import token_auth
-from api.decorators import paginated_response
+from api.decorators import paginated_response, check_confirmed
 
 inspection = Blueprint('inspection', __name__)
 inspection_schema = InspectionSchema()
@@ -32,6 +32,9 @@ answers_schema = AnswerSchema(many=True)
 
 
 @inspection.route('/inspections/member/<int:member_id>')
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
 @paginated_response(inspection_schema, order_by=Inspection.created_on,
                     order_direction='desc',
                     pagination_schema=DateTimePaginationSchema)
@@ -41,6 +44,9 @@ def all_inspections(member_id):
 
 
 @inspection.route('/inspection/forms')
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
 @paginated_response(inspection_forms_schema, order_by=InspectionForm.created_on,
                     order_direction='desc',
                     pagination_schema=DateTimePaginationSchema)
@@ -50,6 +56,9 @@ def all_forms():
 
 
 @inspection.route('/inspection/forms/sections/<int:form_id>')
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
 @paginated_response(inspection_form_sections_schema, order_by=InspectionFormSection.section_no,
                     order_direction='asc',
                     pagination_schema=DateTimePaginationSchema)
@@ -59,6 +68,9 @@ def all_form_sections(form_id):
 
 
 @inspection.route('/inspection', methods=['POST'])
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
 @body(inspection_schema)
 @response(inspection_schema)
 def new_inspection(data):
@@ -70,6 +82,9 @@ def new_inspection(data):
 
 
 @inspection.route('/inspection/forms', methods=['POST'])
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
 @body(inspection_form_schema)
 @response(inspection_form_schema)
 def new_inspection_form(data):
@@ -81,6 +96,9 @@ def new_inspection_form(data):
 
 
 @inspection.route('/inspection/forms/sections', methods=['POST'])
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
 @body(inspection_form_section_schema)
 @response(inspection_form_section_schema)
 def new_section(data):
@@ -92,6 +110,9 @@ def new_section(data):
 
 
 @inspection.route('/inspection/inspectors', methods=['POST'])
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
 @body(inspector_schema)
 @response(inspector_schema)
 def new_inspector(data):
@@ -103,6 +124,9 @@ def new_inspector(data):
 
 
 @inspection.route('/inspection/forms/question', methods=['POST'])
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
 @body(questions_schema)
 @response(questions_schema)
 def new_question(data):
@@ -117,6 +141,9 @@ def new_question(data):
 
 
 @inspection.route('/inspection/answers', methods=['POST'])
+@authenticate(token_auth)
+@check_confirmed
+@authorize.has_role('admin')
 @body(answers_schema)
 @response(answers_schema)
 def new_answer(data):

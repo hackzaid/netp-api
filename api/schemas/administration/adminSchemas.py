@@ -87,6 +87,7 @@ class AssignRoleSchema(ma.Schema):
     class Meta:
         ordered = True
 
+    user_id = ma.Integer(required=True)
     role_id = ma.Integer(required=True)
 
 

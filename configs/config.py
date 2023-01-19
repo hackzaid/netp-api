@@ -23,6 +23,7 @@ class BaseConfig(object):
         DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DATABASE_NAME)
     ALCHEMICAL_ENGINE_OPTIONS = {'echo': as_bool(os.environ.get('SQL_ECHO'))}
     ALCHEMICAL_ECHO = True
+    UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER')
 
     # security options
     SECRET_KEY = os.environ.get('SECRET_KEY', 'top-secret!')
