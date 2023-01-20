@@ -35,11 +35,11 @@ Once all the above have been set(I assume that you haven't messed up), run
 `flask migrate` - create database migration
 If you get any error that looks like the following:
 
-`INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+`INFO  [alembic.runtime.migration] Context impl MySQLImpl.`
 
-INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+`INFO  [alembic.runtime.migration] Will assume non-transactional DDL.`
 
-ERROR [flask_migrate] Error: Target database is not up to date.`
+`ERROR [flask_migrate] Error: Target database is not up to date.`
 
 Run this command to have this sorted;
 `flask db stamp head`
