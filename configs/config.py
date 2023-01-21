@@ -59,7 +59,7 @@ class BaseConfig(object):
 
 class ProdConfig(BaseConfig):
     ENV = 'production'
-    DEBUG = True
+    DEBUG = False
     TESTING = False
     SESSION_COOKIE_NAME = environ.get('SESSION_COOKIE_NAME')
     STATIC_FOLDER = 'static'
@@ -84,10 +84,6 @@ class ProdConfig(BaseConfig):
         'REFRESH_TOKEN_IN_COOKIE') or 'yes')
     REFRESH_TOKEN_IN_BODY = as_bool(os.environ.get('REFRESH_TOKEN_IN_BODY'))
     RESET_TOKEN_MINUTES = int(os.environ.get('RESET_TOKEN_MINUTES') or '15')
-    PASSWORD_RESET_URL = os.environ.get('PASSWORD_RESET_URL') or \
-                         'https://netp-api.herokuapp.com/api/reset/'
-    ACCOUNT_CONFIRMATION_URL = os.environ.get('ACCOUNT_CONFIRMATION_URL') or \
-                               'https://netp-api.herokuapp.com/api/confirm/'
     USE_CORS = as_bool(os.environ.get('USE_CORS') or 'yes')
     CORS_SUPPORTS_CREDENTIALS = True
     JSON_SORT_KEYS = False

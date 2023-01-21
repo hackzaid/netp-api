@@ -2,3 +2,4 @@ venv
 *.pyc
 api/__pycache__/
 /frontendmockup
+/static
