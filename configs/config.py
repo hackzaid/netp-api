@@ -71,6 +71,9 @@ class ProdConfig(BaseConfig):
     ALCHEMICAL_DATABASE_URL = "mysql+pymysql://%s:%s@%s:3306/%s" % (
         DB_USERNAME, DB_PASSWORD, DB_HOST, DATABASE_NAME)
     ALCHEMICAL_ENGINE_OPTIONS = {'echo': as_bool(os.environ.get('SQL_ECHO'))}
+    BASE_URL = os.environ['PROD_BASE_URL']
+    PASSWORD_RESET_URL = BASE_URL + '/reset/'
+    ACCOUNT_CONFIRMATION_URL = BASE_URL + '/confirm/'
 
     # security options
     SECRET_KEY = os.environ.get('SECRET_KEY', 'top-secret!')
