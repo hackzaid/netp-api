@@ -27,8 +27,7 @@ class InspectionFormSectionSchema(ma.SQLAlchemySchema):
         ordered = True
 
     id = ma.auto_field(dump_only=True)
-    name = ma.String(
-        required=True, validate=validate.Length(min=3, max=200))
+    name = ma.String(required=True, validate=validate.Length(min=3, max=200))
     section_no = ma.Integer(required=True)
     inspection_form_id = ma.Integer(required=True)
     questions = ma.Nested(
@@ -41,9 +40,9 @@ class QuestionSchema(ma.SQLAlchemySchema):
         ordered = True
 
     id = ma.auto_field(dump_only=True)
-    name = ma.String(
-        required=True, validate=validate.Length(min=3, max=500))
-    inspection_form_section_id = ma.Integer(required=True)
+    name = ma.String(required=True, validate=validate.Length(min=3, max=500))
+    form_id = ma.Integer(required=True)
+    section_id = ma.Integer(required=True)
 
 
 class InspectorSchema(ma.SQLAlchemySchema):

@@ -206,18 +206,18 @@ def assign_roles(args):
 """ Group Administration """
 
 
-@users.route('/groups', methods=['POST'])
-@authenticate(token_auth)
-@check_confirmed
-@authorize.has_role('admin')
-@body(group_schema)
-@response(group_schema)
-def role_group(args):
-    """Add Platform Groups
-
-    Groups can include government MDAs intended to use the system for it's sole purpose respectively
-    """
-    group = Group(**args)
-    db.session.add(group)
-    db.session.commit()
-    return group
+# @users.route('/groups', methods=['POST'])
+# @authenticate(token_auth)
+# @check_confirmed
+# @authorize.has_role('admin')
+# @body(group_schema)
+# @response(group_schema)
+# def role_group(args):
+#     """Add Platform Groups
+#
+#     Groups can include government MDAs intended to use the system for it's sole purpose respectively
+#     """
+#     group = Group(**args)
+#     db.session.add(group)
+#     db.session.commit()
+#     return group
