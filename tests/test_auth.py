@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from unittest import mock
-from tests.base_test_case import BaseTestCase, TestConfigWithAuth
+from base_test_case import BaseTestCase, TestConfigWithAuth
 
 
 class AuthTests(BaseTestCase):
