@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import sqlalchemy as sqla
+from flask_authorize import PermissionsMixin
 from sqlalchemy import orm as sqla_orm
 
 from api.app import db
@@ -12,8 +13,13 @@ class Updateable:
             setattr(self, attr, value)
 
 
-class InspectionForm(Updateable, db.Model):
+class InspectionForm(Updateable, db.Model, PermissionsMixin):
     __tablename__ = 'netp_inspection_forms'
+    __permissions__ = dict(
+        owner=['create', 'read', 'update', 'delete'],
+        group=['read', 'update'],
+        other=['read']
+    )
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(100), nullable=False)
@@ -21,6 +27,8 @@ class InspectionForm(Updateable, db.Model):
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
     updated_on = sqla.Column(
         sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    form_questions = sqla_orm.relationship('Question', back_populates='inspection_form', lazy='noload')
     inspection_form_sections = sqla_orm.relationship(
         'InspectionFormSection', back_populates='inspection_form')
 
@@ -28,8 +36,13 @@ class InspectionForm(Updateable, db.Model):
         return '<InspectionForm {}>'.format(self.text)
 
 
-class InspectionFormSection(Updateable, db.Model):
+class InspectionFormSection(Updateable, db.Model, PermissionsMixin):
     __tablename__ = 'netp_inspection_form_sections'
+    __permissions__ = dict(
+        owner=['create', 'read', 'update', 'delete'],
+        group=['read', 'update'],
+        other=['read']
+    )
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(200), nullable=False)
@@ -46,14 +59,21 @@ class InspectionFormSection(Updateable, db.Model):
         return '<InspectionFormSection {}>'.format(self.text)
 
 
-class Question(Updateable, db.Model):
+class Question(Updateable, db.Model, PermissionsMixin):
     __tablename__ = 'netp_questions'
+    __permissions__ = dict(
+        owner=['create', 'read', 'update', 'delete'],
+        group=['read', 'update'],
+        other=['read']
+    )
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(500), nullable=False)
-    inspection_form_section_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_inspection_form_sections.id'),
-                                             index=True)
+    form_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_inspection_forms.id'), index=True)
+    section_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_inspection_form_sections.id'),
+                             index=True)
 
+    inspection_form = sqla_orm.relationship(InspectionForm, back_populates='form_questions')
     inspection_form_section = sqla_orm.relationship(
         'InspectionFormSection', back_populates='questions')
 
@@ -61,8 +81,13 @@ class Question(Updateable, db.Model):
         return '<Question {}>'.format(self.text)
 
 
-class Inspector(Updateable, db.Model):
+class Inspector(Updateable, db.Model, PermissionsMixin):
     __tablename__ = 'netp_inspectors'
+    __permissions__ = dict(
+        owner=['create', 'read', 'update', 'delete'],
+        group=['read', 'update'],
+        other=['read']
+    )
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.String(100), nullable=False)
@@ -85,34 +110,41 @@ inspectionInspector = sqla.Table(
 )
 
 
-class Inspection(Updateable, db.Model):
+class Inspection(Updateable, db.Model, PermissionsMixin):
     __tablename__ = 'netp_inspections'
+    __permissions__ = dict(
+        owner=['create', 'read', 'update', 'delete'],
+        group=['read', 'update'],
+        other=['read']
+    )
 
     id = sqla.Column(sqla.Integer, primary_key=True)
-    inspection_inspectors = sqla_orm.relationship(
-        "Inspector", secondary=inspectionInspector, backref='netp_inspections')
-
     inspection_form_id = sqla.Column(sqla.Integer, sqla.ForeignKey('netp_inspection_forms.id'),
                                      index=True)
-    inspection_form = sqla_orm.relationship('InspectionForm')
-
-    user_id = sqla.Column(sqla.Integer, sqla.ForeignKey(
-        'users.id'), index=True)
-    user = sqla_orm.relationship('User')
-
-    answers = sqla_orm.relationship(
-        'Answer', back_populates='inspection')
+    user_id = sqla.Column(sqla.Integer, sqla.ForeignKey('users.id'), index=True)
 
     created_on = sqla.Column(sqla.DateTime, default=datetime.utcnow)
-    updated_on = sqla.Column(
-        sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_on = sqla.Column(sqla.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    inspection_inspectors = sqla_orm.relationship("Inspector", secondary=inspectionInspector,
+                                                  backref='netp_inspections')
+    user = sqla_orm.relationship('User', foreign_keys="[Inspection.user_id]")
+    owner = sqla_orm.relationship("User", foreign_keys="[Inspection.owner_id]", overlaps="user")
+
+    inspection_form = sqla_orm.relationship('InspectionForm')
+    answers = sqla_orm.relationship('Answer', back_populates='inspection')
 
     def __repr__(self):
         return '<Inspections {}>'.format(self.text)
 
 
-class Answer(Updateable, db.Model):
+class Answer(Updateable, db.Model, PermissionsMixin):
     __tablename__ = 'netp_answers'
+    __permissions__ = dict(
+        owner=['create', 'read', 'update', 'delete'],
+        group=['read', 'update'],
+        other=['read']
+    )
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     answer = sqla.Column(sqla.String(100), nullable=False)
