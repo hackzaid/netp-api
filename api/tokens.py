@@ -26,10 +26,10 @@ def token_response(token):
             path=url_for('tokens.new'), secure=not current_app.debug,
             httponly=True, samesite=samesite)
     return {
-        'access_token': token.access_token,
-        'refresh_token': token.refresh_token
-        if current_app.config['REFRESH_TOKEN_IN_BODY'] else None,
-    }, 200, headers
+               'access_token': token.access_token,
+               'refresh_token': token.refresh_token
+               if current_app.config['REFRESH_TOKEN_IN_BODY'] else None,
+           }, 200, headers
 
 
 @tokens.route('/tokens', methods=['POST'])
@@ -45,6 +45,7 @@ def new():
     cannot adequately protect the refresh token against unauthorized access.
     """
     user = basic_auth.current_user()
+    # if user.is_active and user.confirmed:
     token = user.generate_auth_token()
     db.session.add(token)
     Token.clean()  # keep token table clean of old tokens
@@ -103,7 +104,7 @@ def reset(args):
     if user is not None:
         reset_token = user.generate_reset_token()
         reset_url = current_app.config['PASSWORD_RESET_URL'] + \
-            '?token=' + reset_token
+                    '?token=' + reset_token
         send_email(args['email'], 'Reset Your Password', 'reset',
                    token=reset_token, url=reset_url)
     return {}

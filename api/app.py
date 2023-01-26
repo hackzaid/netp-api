@@ -10,6 +10,7 @@ from apifairy import APIFairy
 from configs.config import BaseConfig, ProdConfig
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_authorize import Authorize
+import flask_monitoringdashboard as dashboard
 
 db = Alchemical()
 migrate = Migrate()
@@ -45,6 +46,7 @@ def create_app(config_class=app_config):
     mail.init_app(app)
     apifairy.init_app(app)
     authorize.init_app(app)
+    dashboard.bind(app)
 
     # blueprints
     from api.errors import errors
