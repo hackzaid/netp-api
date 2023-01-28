@@ -46,6 +46,7 @@ def create_app(config_class=app_config):
     mail.init_app(app)
     apifairy.init_app(app)
     authorize.init_app(app)
+    dashboard.config.init_from(envvar="FLASK_MONITORING_DASHBOARD_CONFIG")
     dashboard.bind(app)
 
     # blueprints

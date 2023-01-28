@@ -24,6 +24,7 @@ class BaseConfig(object):
     ALCHEMICAL_ENGINE_OPTIONS = {'echo': as_bool(os.environ.get('SQL_ECHO'))}
     ALCHEMICAL_ECHO = True
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER')
+    FLASK_MONITORING_DASHBOARD_CONFIG = os.environ.get('FLASK_MONITORING_DASHBOARD_CONFIG')
 
     # security options
     SECRET_KEY = os.environ.get('SECRET_KEY', 'top-secret!')
