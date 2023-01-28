@@ -1,4 +1,6 @@
-National Export Trade Promotion - API
+National Trade Facilitation Platform - API
+
+Live APP - [Click Here](https://netp-api.herokuapp.com/)
 
 A government initiative to promote export of quality products through Information Technology
 
