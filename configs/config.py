@@ -74,6 +74,7 @@ class ProdConfig(BaseConfig):
     BASE_URL = os.environ['PROD_BASE_URL']
     PASSWORD_RESET_URL = BASE_URL + '/reset/'
     ACCOUNT_CONFIRMATION_URL = BASE_URL + '/confirm/'
+    FLASK_MONITORING_DASHBOARD_CONFIG = os.environ.get('FLASK_MONITORING_DASHBOARD_CONFIG')
 
     # security options
     SECRET_KEY = os.environ.get('SECRET_KEY', 'top-secret!')
@@ -92,7 +93,7 @@ class ProdConfig(BaseConfig):
     APIFAIRY_TITLE = 'National Export Trade Promotion API'
     APIFAIRY_VERSION = '1.0'
     APIFAIRY_UI = os.environ.get('DOCS_UI', 'elements')
-    APIFAIRY_UI_PATH = '/api/docs'
+    # APIFAIRY_UI_PATH = '/api/docs'
     # APIFAIRY_TAGS = ['tokens_guest', 'booking', 'rooms', 'guests', 'restaurant']
 
     # email options
