@@ -56,7 +56,6 @@ class BaseConfig(object):
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER',
                                          'no-reply@cloudafrika.com')
 
-
 class ProdConfig(BaseConfig):
     ENV = 'production'
     DEBUG = False
