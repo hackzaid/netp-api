@@ -44,7 +44,7 @@ class BaseConfig(object):
     JSON_SORT_KEYS = False
 
     # API documentation
-    APIFAIRY_TITLE = 'National Trade Facilitation Platform'
+    APIFAIRY_TITLE = 'National Trade Facilitation Platform API'
     APIFAIRY_VERSION = 'V1.0'
     APIFAIRY_UI = os.environ.get('DOCS_UI', 'elements')
 
@@ -57,11 +57,11 @@ class BaseConfig(object):
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER',
                                          'no-reply@cloudafrika.com')
 
+
 class ProdConfig(BaseConfig):
     ENV = 'production'
     DEBUG = False
     TESTING = False
-    SESSION_COOKIE_NAME = environ.get('SESSION_COOKIE_NAME')
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
     DB_USERNAME = os.environ['PROD_DB_USERNAME']
@@ -90,7 +90,7 @@ class ProdConfig(BaseConfig):
     JSON_SORT_KEYS = False
 
     # API documentation
-    APIFAIRY_TITLE = 'National Export Trade Promotion API'
+    APIFAIRY_TITLE = 'National Trade Facilitation Platform API'
     APIFAIRY_VERSION = '1.0'
     APIFAIRY_UI = os.environ.get('DOCS_UI', 'elements')
     # APIFAIRY_UI_PATH = '/api/docs'
