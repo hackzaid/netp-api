@@ -7,8 +7,6 @@ SAMPLING_PERIOD=20
 ENABLE_LOGGING=True
 
 [authentication]
-USERNAME=admin
-PASSWORD=admin
 SECURITY_TOKEN=cc83733cb0af8b884ff6577086b87909
 
 [database]
