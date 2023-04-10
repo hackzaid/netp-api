@@ -64,8 +64,6 @@ Within your SQL Database, delete/drop previously created tables then,
 
 Run `flask db upgrade again`
 
-ppphhheeeewwww
-
 Run `flask run` to start the application, then access it via the provided url,
 
 If running by the defaults, the system can be accessed via
